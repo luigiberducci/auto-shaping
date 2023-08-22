@@ -17,12 +17,20 @@ Specification-based library for automatic reward shaping.
 
 :x: Not supported
 
+## TODOs
+ - [ ] Re-implement HPRS with automatic normalization 
+ - [ ] Unified Parser
+ - [ ] Convert from parser to rtamt specs
+ - [ ] Test rewards with cartpole, bipedal walker, and lunar lander from exp repo
+
+
 ## Examples
  - [ ] Integration with gymnasium
  - [ ] Integration with stable-baselines3
  - [ ] Integration with safety-gym
  - [ ] Use of predefined env specs
  - [ ] Use of custom env specs
+
 
 # References
 [1] "Reinforcement learning with temporal logic rewards." Li, et al. IROS 2017.
