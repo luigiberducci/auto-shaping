@@ -11,6 +11,12 @@ Specification-based library for automatic reward shaping.
 | PAM<sup>[4]</sup>                    | :x:                | :heavy_check_mark:  | :heavy_check_mark:       | :x:                |
 | Rank-Preserving Reward<sup>[5]</sup> | :x:                | :heavy_check_mark:  | :heavy_check_mark:       | :x:                |
 
+:heavy_check_mark: Yes
+
+:grey_question: Possible
+
+:x: Not supported
+
 ## Examples
  - [ ] Integration with gymnasium
  - [ ] Integration with stable-baselines3
