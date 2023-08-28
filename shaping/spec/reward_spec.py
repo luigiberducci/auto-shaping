@@ -58,7 +58,7 @@ class RewardSpec:
 
         self._specs = [RequirementSpec(sp) for sp in specs]
 
-        self._variables = []
+        self._variables = {}
         for var in variables:
             if isinstance(var, Variable):
                 assert (
@@ -74,14 +74,14 @@ class RewardSpec:
                 ), f"Variable {var[0]} has min value greater than max value"
             else:
                 raise ValueError(f"Variable {var} must be a Variable or a tuple")
-            self._variables.append(Variable(*var))
+            self._variables[var[0]] = Variable(*var)
 
     @property
     def specs(self) -> List[RequirementSpec]:
         return self._specs
 
     @property
-    def variables(self) -> List[Variable]:
+    def variables(self) -> dict[str, Variable]:
         return self._variables
 
     @staticmethod

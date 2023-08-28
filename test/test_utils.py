@@ -3,6 +3,7 @@ import unittest
 import numpy as np
 
 from shaping.utils import monitor_stl_episode
+from shaping.utils.dictionary_wrapper import DictWrapper
 
 
 class TestRTAMTUtils(unittest.TestCase):
@@ -82,6 +83,37 @@ class TestRTAMTUtils(unittest.TestCase):
         assert np.isclose(
             rob, rob1, atol=1e-5
         ), f"robustness is not correct, expected {rob}, got {rob1}"
+
+
+class TestWrappers(unittest.TestCase):
+    def test_dict_wrapper(self):
+        import gymnasium
+
+        env = gymnasium.make("CartPole-v1", render_mode="human")
+        env = DictWrapper(env, variables=["x", "x_dot", "theta", "theta_dot"])
+
+        self.assertTrue(
+            hasattr(env, "observation_space"), "observation space not found"
+        )
+        self.assertTrue(
+            type(env.observation_space) == gymnasium.spaces.Dict,
+            "observation space not a dict",
+        )
+
+        done = False
+        obs, info = env.reset()
+        self.assertTrue(
+            type(obs) == dict, "observation after reset not a dict"
+        )
+
+        while not done:
+            action = env.action_space.sample()
+            obs, reward, done, truncated, info = env.step(action)
+            self.assertTrue(
+                type(obs) == dict, f"observation after step not a dict, got {type(obs)}"
+            )
+
+        env.close()
 
 
 class TestRewardTypes(unittest.TestCase):

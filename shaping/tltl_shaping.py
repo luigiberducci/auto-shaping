@@ -23,7 +23,7 @@ class TLTLWrapper(CollectionWrapper):
             except:
                 pass
         self._stl_spec = " and ".join(reqs)
-        self._variables = [var.name for var in spec.variables]
+        self._variables = spec.variables.keys()
 
         super(TLTLWrapper, self).__init__(
             env, self._variables,

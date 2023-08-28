@@ -3,8 +3,10 @@ from typing import List, Callable
 
 import gymnasium
 
+from shaping.utils.dictionary_wrapper import DictWrapper
 
-class CollectionWrapper(gymnasium.Wrapper):
+
+class CollectionWrapper(DictWrapper):
     """
     Collects k-th most recent observable varibles over an episode.
 
@@ -15,23 +17,15 @@ class CollectionWrapper(gymnasium.Wrapper):
     """
 
     def __init__(
-        self,
-        env: gymnasium.Env,
-        variables: List[str],
-        extractor_fn: Callable = None,
-        window_len: int = None,
+            self,
+            env: gymnasium.Env,
+            variables: List[str],
+            extractor_fn: Callable = None,
+            window_len: int = None,
     ):
-        super(CollectionWrapper, self).__init__(env)
-        self.env = env
+        super(CollectionWrapper, self).__init__(env, variables=variables, extractor_fn=extractor_fn)
 
-        if extractor_fn is None:
-            extractor_fn = lambda obs, done, info: {
-                v: obs[i] for i, v in enumerate(variables)
-            }
-        self._variables = variables
-        self._extractor_fn = extractor_fn
         self._window_len = window_len
-
         self._flag_time = "time" in self._variables
         self._time = None
         self._episode = None
@@ -53,8 +47,7 @@ class CollectionWrapper(gymnasium.Wrapper):
         obs, reward, done, truncated, info = super().step(action)
 
         # collect observable variables from the state
-        monitored_state = self._extractor_fn(obs, done, info)
-        for key, value in monitored_state.items():
+        for key, value in obs.items():
             self._episode[key].append(value)
 
         if not self._flag_time:
