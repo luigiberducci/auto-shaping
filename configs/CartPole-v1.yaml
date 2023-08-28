@@ -1,0 +1,22 @@
+specs:
+  - 'ensure "x" >= 0.0'
+  - 'ensure "x" <= 1.0'
+  - 'encourage "theta" < 0.22'
+
+variables:
+  - name: x
+    min: -2.4
+    max: 2.4
+    description: "x position of the cart"
+  - name: x_dot
+    min: -5.0
+    max: 5.0
+    description: "velocity of the cart"
+  - name: theta
+    min: -0.2
+    max: 0.2
+    description: "angle of the pole"
+  - name: theta_dot
+    min: -5.0
+    max: 5.0
+    description: "angular velocity of the pole"

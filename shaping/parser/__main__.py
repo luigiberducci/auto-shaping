@@ -2,7 +2,7 @@ import os
 import pathlib
 from lark import Lark
 
-from shaping.parser.transformer import HPRSTransformer
+from shaping.parser.transformer import RewardShapingTransformer
 
 # load grammar
 wd = pathlib.Path(os.path.dirname(os.path.realpath(__file__)))
@@ -10,7 +10,7 @@ with open(wd / 'grammar.txt', 'r') as f:
     grammar = f.read()
 
 # create parser
-json_parser = Lark(grammar, start='start', parser='lalr', transformer=HPRSTransformer())
+my_parser = Lark(grammar, start='start', parser='lalr', transformer=RewardShapingTransformer())
 
 # example
 texts = [
@@ -20,5 +20,5 @@ texts = [
     ]
 
 for text in texts:
-    result = json_parser.parse(text)
+    result = my_parser.parse(text)
     print(result.pretty())

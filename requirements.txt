@@ -2,3 +2,4 @@ gymnasium[classic-control]
 opencv-python
 rtamt
 lark
+pyyaml

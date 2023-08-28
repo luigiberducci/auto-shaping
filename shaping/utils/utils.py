@@ -4,6 +4,8 @@ from typing import Any, List, Dict
 def monitor_stl_episode(stl_spec: str, vars: List[str], episode: Dict[str, Any], types: List[str] = None):
     import rtamt
 
+    assert type(episode) == dict, f"episode must be a dict, got {type(episode)}"
+
     if types is None:
         types = ['float'] * len(vars)
 

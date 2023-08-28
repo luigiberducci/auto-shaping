@@ -32,11 +32,12 @@ class TestRTAMTUtils(unittest.TestCase):
             rob = spec.update(i, [("req", data1["req"][i]), ("gnt", data1["gnt"][i])])
 
         # from custom utils
+        datadict = {k: data1[k].tolist() for k in data1.columns}
         rob_trace = monitor_stl_episode(
             stl_spec=spec.spec,
             vars=["req", "gnt"],
             types=["float", "float"],
-            episode=data1,
+            episode=datadict,
         )
         rob1 = rob_trace[0][1]
 
@@ -71,8 +72,9 @@ class TestRTAMTUtils(unittest.TestCase):
             rob = spec.update(i, [("req", data1["req"][i]), ("gnt", data1["gnt"][i])])
 
         # from custom utils
+        datadict = {k: data1[k].tolist() for k in data1.columns}
         rob_trace = monitor_stl_episode(
-            stl_spec=spec.spec, vars=["req", "gnt"], episode=data1
+            stl_spec=spec.spec, vars=["req", "gnt"], episode=datadict
         )
         rob1 = rob_trace[0][1]
 
@@ -80,3 +82,15 @@ class TestRTAMTUtils(unittest.TestCase):
         assert np.isclose(
             rob, rob1, atol=1e-5
         ), f"robustness is not correct, expected {rob}, got {rob1}"
+
+
+class TestRewardTypes(unittest.TestCase):
+    def test_enum_types(self):
+        from shaping import RewardType
+
+        reward_types = ["TLTL", "BHNR", "MORL", "HPRS", "PAM", "RPR"]
+
+        for reward_type in reward_types:
+            assert reward_type in RewardType.__members__, f"reward type {reward_type} not in RewardType enum"
+            reward = RewardType.from_str(reward_type)
+            assert reward.name == reward_type, f"reward type {reward_type} not in RewardType enum"

@@ -20,8 +20,10 @@
      | var "<=" const   -> le
 
 ?var: ESCAPED_STRING
-?const: NUMBER -> number
+?const: SIGNED_NUMBER -> number
       | ESCAPED_STRING -> string
+
+SIGNED_NUMBER: ("+" | "-")? NUMBER
 
 %import common.ESCAPED_STRING
 %import common.WS_INLINE

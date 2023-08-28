@@ -13,24 +13,32 @@ class TLTLWrapper(CollectionWrapper):
     """
 
     def __init__(
-        self,
-        env: gymnasium.Env,
-        spec: RewardSpec,
+            self,
+            env: gymnasium.Env,
+            spec: RewardSpec,
     ):
+        reqs = []
+        for req_spec in spec.specs:
+            try:
+                stl_req = req_spec.to_rtamt()
+                reqs.append(stl_req)
+            except:
+                pass
+        self._stl_spec = " and ".join(reqs)
+        self._variables = [var.name for var in spec.variables]
+
         super(TLTLWrapper, self).__init__(
             env,
-            spec.variables,
+            self._variables,
         )
-        self._spec = spec
 
     def _reward(self, obs, done, info):
         reward = 0.0
 
         if done:
-            joint_spec = " and ".join(self._spec.specs)
             robustness_trace = monitor_stl_episode(
-                joint_spec,
-                self._spec.variables,
+                self._stl_spec,
+                self._variables,
                 self._episode,
             )
             reward = robustness_trace[0][1]

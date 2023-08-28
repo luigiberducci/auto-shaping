@@ -2,7 +2,7 @@ import numpy as np
 from lark import Transformer
 
 
-class HPRSTransformer(Transformer):
+class RewardShapingTransformer(Transformer):
     list = list
     assignments = {}
 

@@ -13,11 +13,13 @@ class TestTLTL(unittest.TestCase):
 
         spec = RewardSpec(
             specs=[
-                "always(x < 2.4)",
-                "always(x > -2.4)",
+                'ensure "x" < 2.4',
+                'ensure "x" > -2.4',
             ],
-            variables=["x"],
-            ranges=[(-2.4, 2.4)],
+            variables=[("x", -2.4, 2.4),
+                       ("x_dot", -3.0, 3.0),
+                       ("theta", -0.2, 0.2),
+                       ("theta_dot", -3.0, 3.0)]
         )
         env = TLTLWrapper(env, spec)
 
@@ -45,13 +47,15 @@ class TestTLTL(unittest.TestCase):
 
         spec = RewardSpec(
             specs=[
-                "always(x < 2.4)",
-                "always(x > -2.4)",
-                "always(theta < 0.209)",
-                "always(theta > -0.209)",
+                'ensure "x" < 2.4',
+                'ensure "x" > -2.4',
+                'ensure "theta" < 0.2',
+                'ensure "theta" > -0.2',
             ],
-            variables=["x", "x_dot", "theta", "theta_dot"],
-            ranges=[(-2.4, 2.4), (-3.0, 3.0), (-0.209, 0.209), (-3.0, 3.0)],
+            variables=[("x", -2.4, 2.4),
+                       ("x_dot", -3.0, 3.0),
+                       ("theta", -0.2, 0.2),
+                       ("theta_dot", -3.0, 3.0)]
         )
         env = TLTLWrapper(env, spec)
 
