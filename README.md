@@ -17,10 +17,21 @@ Specification-based library for automatic reward shaping.
 
 :x: Not supported
 
+## Specification Language
+The task specification consists of a set of requirements, as in [4]. The requirement syntax is as follows:
+```
+formula ::= f(state) ~ 0
+requirement ::= ensure <formula> | achieve <formula> | conquer <formula> | encourage <formula>
+```
+
+where `f` is a function of the state dictionary `state` 
+and `~` is a comparison operator in `<`, `<=`, `>`, `>=`, `==`, `!=`.
+
+
 ## TODOs
  - [ ] Re-implement HPRS with automatic normalization 
- - [ ] Unified Parser
- - [ ] Convert from parser to rtamt specs
+ - [x] Unified Parser
+ - [x] Convert from parser to rtamt specs
  - [ ] Test rewards with cartpole, bipedal walker, and lunar lander from exp repo
 
 
