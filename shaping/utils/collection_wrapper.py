@@ -15,17 +15,19 @@ class CollectionWrapper(gymnasium.Wrapper):
     """
 
     def __init__(
-            self,
-            env: gymnasium.Env,
-            variables: List[str],
-            extractor_fn: Callable = None,
-            window_len: int = None,
+        self,
+        env: gymnasium.Env,
+        variables: List[str],
+        extractor_fn: Callable = None,
+        window_len: int = None,
     ):
         super(CollectionWrapper, self).__init__(env)
         self.env = env
 
         if extractor_fn is None:
-            extractor_fn = lambda obs, done, info: {v: obs[i] for i, v in enumerate(variables)}
+            extractor_fn = lambda obs, done, info: {
+                v: obs[i] for i, v in enumerate(variables)
+            }
         self._variables = variables
         self._extractor_fn = extractor_fn
         self._window_len = window_len

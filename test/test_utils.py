@@ -91,6 +91,10 @@ class TestRewardTypes(unittest.TestCase):
         reward_types = ["TLTL", "BHNR", "MORL", "HPRS", "PAM", "RPR"]
 
         for reward_type in reward_types:
-            assert reward_type in RewardType.__members__, f"reward type {reward_type} not in RewardType enum"
+            assert (
+                reward_type in RewardType.__members__
+            ), f"reward type {reward_type} not in RewardType enum"
             reward = RewardType.from_str(reward_type)
-            assert reward.name == reward_type, f"reward type {reward_type} not in RewardType enum"
+            assert (
+                reward.name == reward_type
+            ), f"reward type {reward_type} not in RewardType enum"

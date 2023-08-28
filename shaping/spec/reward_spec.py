@@ -17,9 +17,11 @@ class RequirementSpec:
 
     def __init__(self, spec: str):
         if self.parser is None:
-            with open(self.grammar_path, 'r') as f:
+            with open(self.grammar_path, "r") as f:
                 grammar = f.read()
-                self.parser = Lark(grammar, start='start', parser='lalr', transformer=self.transformer)
+                self.parser = Lark(
+                    grammar, start="start", parser="lalr", transformer=self.transformer
+                )
 
             logging.debug(f"Loaded grammar from {self.grammar_path}")
 
@@ -43,12 +45,13 @@ class RequirementSpec:
             raise NotImplementedError("Encourage not implemented")
 
 
-
 class RewardSpec:
     def __init__(
         self,
         specs: List[str],
-        variables: List[Union[Variable, tuple[str, float, float], tuple[str, float, float, str]]],
+        variables: List[
+            Union[Variable, tuple[str, float, float], tuple[str, float, float, str]]
+        ],
     ):
         assert len(specs) > 0, "At least one specification must be provided"
         assert len(variables) > 0, "At least one variable must be provided"
@@ -58,10 +61,17 @@ class RewardSpec:
         self._variables = []
         for var in variables:
             if isinstance(var, Variable):
-                assert var.min < var.max, f"Variable {var.name} has min value greater than max value"
+                assert (
+                    var.min < var.max
+                ), f"Variable {var.name} has min value greater than max value"
             elif isinstance(var, tuple):
-                assert len(var) in [3, 4], f"Variable {var[0]} must be a tuple of length 3 or 4"
-                assert var[1] < var[2], f"Variable {var[0]} has min value greater than max value"
+                assert len(var) in [
+                    3,
+                    4,
+                ], f"Variable {var[0]} must be a tuple of length 3 or 4"
+                assert (
+                    var[1] < var[2]
+                ), f"Variable {var[0]} has min value greater than max value"
             else:
                 raise ValueError(f"Variable {var} must be a Variable or a tuple")
             self._variables.append(Variable(*var))
@@ -85,13 +95,16 @@ class RewardSpec:
 
         variables = []
         for var_dict in spec["variables"]:
-            assert all([k in var_dict for k in ["name", "min", "max"]]), f"Variable {var_dict} must have keys 'name', 'min', and 'max'"
+            assert all(
+                [k in var_dict for k in ["name", "min", "max"]]
+            ), f"Variable {var_dict} must have keys 'name', 'min', and 'max'"
             desc = var_dict.get("description", "")
-            var = Variable(name=var_dict["name"], min=var_dict["min"], max=var_dict["max"], description=desc)
+            var = Variable(
+                name=var_dict["name"],
+                min=var_dict["min"],
+                max=var_dict["max"],
+                description=desc,
+            )
             variables.append(var)
 
-        return RewardSpec(
-            specs=specs,
-            variables=variables
-        )
-
+        return RewardSpec(specs=specs, variables=variables)

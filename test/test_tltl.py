@@ -12,14 +12,13 @@ class TestTLTL(unittest.TestCase):
         from shaping.spec.reward_spec import RewardSpec
 
         spec = RewardSpec(
-            specs=[
-                'ensure "x" < 2.4',
-                'ensure "x" > -2.4',
+            specs=['ensure "x" < 2.4', 'ensure "x" > -2.4',],
+            variables=[
+                ("x", -2.4, 2.4),
+                ("x_dot", -3.0, 3.0),
+                ("theta", -0.2, 0.2),
+                ("theta_dot", -3.0, 3.0),
             ],
-            variables=[("x", -2.4, 2.4),
-                       ("x_dot", -3.0, 3.0),
-                       ("theta", -0.2, 0.2),
-                       ("theta_dot", -3.0, 3.0)]
         )
         env = TLTLWrapper(env, spec)
 
@@ -52,10 +51,12 @@ class TestTLTL(unittest.TestCase):
                 'ensure "theta" < 0.2',
                 'ensure "theta" > -0.2',
             ],
-            variables=[("x", -2.4, 2.4),
-                       ("x_dot", -3.0, 3.0),
-                       ("theta", -0.2, 0.2),
-                       ("theta_dot", -3.0, 3.0)]
+            variables=[
+                ("x", -2.4, 2.4),
+                ("x_dot", -3.0, 3.0),
+                ("theta", -0.2, 0.2),
+                ("theta_dot", -3.0, 3.0),
+            ],
         )
         env = TLTLWrapper(env, spec)
 

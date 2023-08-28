@@ -23,7 +23,11 @@ class RewardType(Enum):
         return RewardType[reward_name]
 
 
-def wrap(env: Union[str, gymnasium.Env], reward: str, spec: Union[RewardSpec, pathlib.Path] = None):
+def wrap(
+    env: Union[str, gymnasium.Env],
+    reward: str,
+    spec: Union[RewardSpec, pathlib.Path] = None,
+):
     """
     Wrap an environment with a reward shaping wrapper.
 
@@ -42,4 +46,3 @@ def wrap(env: Union[str, gymnasium.Env], reward: str, spec: Union[RewardSpec, pa
         return RewardType.from_str(reward).value(env, spec)
     else:
         raise ValueError("spec must be a RewardSpec or a path to a yaml file")
-
