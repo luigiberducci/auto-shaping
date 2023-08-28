@@ -6,20 +6,18 @@ class RewardShapingTransformer(Transformer):
     list = list
     assignments = {}
 
+    def add_constant(self, name, value):
+        self.assignments[name] = value
+
     def assignment(self, s):
         var, val = s
         var = var.replace('"', "")
-        self.assignments[var] = float(val)
+        self.add_constant(var, float(val))
         return (var, float(val))
 
     def gt(self, s):
         var, val = s
         var = var.replace('"', "")
-
-        if not isinstance(val, float):
-            val = val.children[0].value.replace('"', "")
-            assert val in self.assignments, f"Variable {val} not defined"
-            val = self.assignments[val]
 
         return (var, ">", float(val))
 
@@ -38,16 +36,22 @@ class RewardShapingTransformer(Transformer):
         var = var.replace('"', "")
         return (var, "<=", float(val))
 
-    def eq(self, s):
-        var, val = s
-        var = var.replace('"', "")
-        return (var, "==", float(val))
-
-    def ne(self, s):
-        var, val = s
-        var = var.replace('"', "")
-        return (var, "!=", float(val))
-
     def number(self, n):
         (n,) = n
         return float(n)
+
+    def pos(self, n):
+        (n,) = n
+        return float(n)
+
+    def neg(self, n):
+        (n,) = n
+        return -float(n)
+
+    def string(self, s):
+        var = s[0].value.replace('"', "")
+
+        if not var in self.assignments:
+            raise ValueError(f"Variable {var} not defined")
+
+        return float(self.assignments[var])

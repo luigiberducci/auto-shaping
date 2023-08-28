@@ -16,9 +16,9 @@ my_parser = Lark(
 
 # example
 texts = [
-    '["x_limit"=0.5, ensure "x">"x_limit", achieve "x"<=0.5, encourage "y">5.0]',
-    'achieve "xy" == 9.99',
-    '[achieve "xy" == 9.99, ensure "x" > 0.5]',
+    '["x_limit"=0.5, ensure "x">-"x_limit", achieve "x"<=0.5, encourage "y">5.0]',
+    'achieve "xy" >= 9.99',
+    '[achieve "xy" <= 9.99, ensure "x" > 0.5]',
 ]
 
 for text in texts:

@@ -12,18 +12,14 @@
                    | "conquer" expr -> conquer
 ?comfort_requirement: "encourage" expr -> encourage
 
-?expr: var "==" const    -> eq
-     | var "!=" const    -> ne
-     | var ">" const    -> gt
-     | var ">=" const   -> ge
-     | var "<" const    -> lt
-     | var "<=" const   -> le
+?expr: var ">" signed_const    -> gt
+     | var ">=" signed_const   -> ge
+     | var "<" signed_const    -> lt
+     | var "<=" signed_const   -> le
 
 ?var: ESCAPED_STRING
-?const: SIGNED_NUMBER -> number
-      | ESCAPED_STRING -> string
-
-SIGNED_NUMBER: ("+" | "-")? NUMBER
+?signed_const: const | "+" const -> pos | "-" const -> neg
+?const: NUMBER -> number | ESCAPED_STRING -> string
 
 %import common.ESCAPED_STRING
 %import common.WS_INLINE
