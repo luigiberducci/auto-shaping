@@ -25,7 +25,7 @@ requirement ::= ensure <formula> | achieve <formula> | conquer <formula> | encou
 ```
 
 where `f` is a function of the state dictionary `state` 
-and `~` is a comparison operator in `<`, `<=`, `>`, `>=`, `==`, `!=`.
+and `~` is a comparison operator in `<`, `<=`, `>`, `>=`.
 
 
 ## TODOs
