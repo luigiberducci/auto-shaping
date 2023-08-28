@@ -8,6 +8,7 @@ from lark import Lark
 from shaping.parser.transformer import RewardShapingTransformer
 
 Variable = namedtuple("Variable", ["name", "min", "max", "description"], defaults=[""])
+Constant = namedtuple("Constant", ["name", "value", "description"], defaults=[""])
 
 
 class RequirementSpec:
@@ -52,11 +53,12 @@ class RewardSpec:
         variables: List[
             Union[Variable, tuple[str, float, float], tuple[str, float, float, str]]
         ],
+        constants: List[
+            Union[Constant, tuple[str, float], tuple[str, float, str]]
+        ] = None,
     ):
         assert len(specs) > 0, "At least one specification must be provided"
         assert len(variables) > 0, "At least one variable must be provided"
-
-        self._specs = [RequirementSpec(sp) for sp in specs]
 
         self._variables = {}
         for var in variables:
@@ -64,6 +66,7 @@ class RewardSpec:
                 assert (
                     var.min < var.max
                 ), f"Variable {var.name} has min value greater than max value"
+                variable_obj = var
             elif isinstance(var, tuple):
                 assert len(var) in [
                     3,
@@ -72,9 +75,30 @@ class RewardSpec:
                 assert (
                     var[1] < var[2]
                 ), f"Variable {var[0]} has min value greater than max value"
+                variable_obj = Variable(*var)
             else:
                 raise ValueError(f"Variable {var} must be a Variable or a tuple")
-            self._variables[var[0]] = Variable(*var)
+            self._variables[var[0]] = variable_obj
+
+        self._constants = {}
+        if constants is not None:
+            for const in constants:
+                if isinstance(const, Constant):
+                    constant_obj = const
+                elif isinstance(const, tuple):
+                    assert len(const) in [
+                        2,
+                        3,
+                    ], f"Constant {const[0]} must be a tuple of length 2 or 3, (name, value, description)"
+                    constant_obj = Constant(*const)
+                else:
+                    raise ValueError(f"Constant {const} must be a Constant or a tuple")
+                self._constants[const[0]] = constant_obj
+                RequirementSpec.transformer.add_constant(name=constant_obj.name, value=constant_obj.value)
+
+        # important to do this after constants are set
+        self._specs = [RequirementSpec(sp) for sp in specs]
+
 
     @property
     def specs(self) -> List[RequirementSpec]:

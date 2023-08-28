@@ -33,6 +33,7 @@ and `~` is a comparison operator in `<`, `<=`, `>`, `>=`.
  - [x] Unified Parser
  - [x] Convert from parser to rtamt specs
  - [ ] Test rewards with cartpole, bipedal walker, and lunar lander from exp repo
+ - [ ] Add absolute value and exponential functions to spec language
 
 
 ## Examples

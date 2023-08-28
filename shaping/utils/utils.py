@@ -1,5 +1,8 @@
 from typing import Any, List, Dict
 
+import numpy as np
+from numba import njit
+
 
 def monitor_stl_episode(
     stl_spec: str, vars: List[str], episode: Dict[str, Any], types: List[str] = None
@@ -27,3 +30,25 @@ def monitor_stl_episode(
     robustness_trace = spec.evaluate(episode)
 
     return robustness_trace
+
+
+@njit(cache=True)
+def clip_and_norm(v: float, minv: float, maxv: float) -> float:
+    """
+    Normalize value in [0, 1].
+
+    :param v: value `v` before normalization,
+    :param minv: `minv` extreme values of the domain.
+    :param maxv: `maxv` extreme values of the domain.
+    :return: normalized value v' in [0, 1].
+    """
+    if np.abs(minv - maxv) <= 0.000001:
+        return 0.0
+
+    # rewritten to avoid clip
+    if v < minv:
+        v = minv
+    elif v > maxv:
+        v = maxv
+
+    return (v - minv) / (maxv - minv)
