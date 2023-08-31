@@ -1,7 +1,8 @@
-# auto-shaping
-Specification-based library for automatic reward shaping.
+[![Logo](docs/logo.png#center)](https://github.com/luigiberducci/auto-shaping)
 
-![logo](docs/logo.png)
+<h2 align="center">Specification-based library for automatic reward shaping.</h2>
+
+
 
 
 ## Methods
