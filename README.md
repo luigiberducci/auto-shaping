@@ -1,8 +1,6 @@
-[![Logo](docs/logo.png#center)](https://github.com/luigiberducci/auto-shaping)
+[![Logo](docs/logo.svg)](https://github.com/luigiberducci/auto-shaping)
 
 <h2 align="center">Specification-based library for automatic reward shaping.</h2>
-
-
 
 
 ## Methods
