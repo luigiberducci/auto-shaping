@@ -1,7 +1,22 @@
 specs:
-  - 'ensure "x" >= 0.0'
-  - 'ensure "x" <= 1.0'
-  - 'encourage "theta" < 0.22'
+  - 'ensure abs "x"<= "x_limit"'
+  - 'ensure abs "theta" <= "theta_limit"'
+  - 'conquer abs "x" <= "x_center"'
+  - 'encourage "theta" <= "theta_balance"'
+
+constants:
+  - name: x_limit
+    value: 2.4
+    description: "world limit"
+  - name: x_center
+    value: 0.25
+    description: "x +- x_center delimits the center of the world"
+  - name: theta_limit
+    value: 0.2095
+    description: "pole angle limit which terminates the episode"
+  - name: theta_balance
+    value: 0.10
+    description: "pole angle limit which determines the balance state"
 
 variables:
   - name: x

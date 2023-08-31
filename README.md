@@ -1,5 +1,8 @@
-# Auto-Shaping
+# auto-shaping
 Specification-based library for automatic reward shaping.
+
+![logo](docs/logo.png)
+
 
 ## Methods
 | Method                               | Dense Signal       | Multi-Objective     | Objective Prioritization | Implemented        |
@@ -29,11 +32,13 @@ and `~` is a comparison operator in `<`, `<=`, `>`, `>=`.
 
 
 ## TODOs
- - [ ] Re-implement HPRS with automatic normalization 
+ - [x] Re-implement HPRS with automatic normalization 
  - [x] Unified Parser
  - [x] Convert from parser to rtamt specs
  - [ ] Test rewards with cartpole, bipedal walker, and lunar lander from exp repo
  - [ ] Add absolute value and exponential functions to spec language
+ - [ ] Implement PAM metric from HPRS evaluation
+ - [ ] Implement rank-preserving reward from rulebook paper
 
 
 ## Examples
