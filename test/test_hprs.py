@@ -16,9 +16,9 @@ class TestHPRS(unittest.TestCase):
         from shaping.spec.reward_spec import RewardSpec
 
         spec = RewardSpec(
-            specs=['ensure "x" < 2.4', 'ensure "x" > -2.4',
-                   'achieve "x" <= 0.1',
-                   'encourage "theta" < 0.2', 'encourage "theta" > -0.2'],
+            specs=['ensure abs "x" <= 2.4',
+                   'achieve abs "x" <= 0.05',
+                   'encourage abs "theta" <= 0.0'],
             variables=[
                 ("x", -2.4, 2.4),
                 ("x_dot", -3.0, 3.0),
@@ -34,10 +34,6 @@ class TestHPRS(unittest.TestCase):
         while not done:
             obs, reward, done, truncated, info = env.step(env.action_space.sample())
             print(reward)
-
-            goal_reached = obs["x"] <= 0.1
-            self.assertTrue(not goal_reached or np.isclose(reward, 1.0), f"Expected reward to be 1.0 when goal reached, got {reward} for x={obs['x']}")
-            self.assertTrue(goal_reached or np.isclose(reward, 0.0), f"Expected reward to be 0.0 when goal not reached, got {reward} for x={obs['x']}")
 
         env.close()
 

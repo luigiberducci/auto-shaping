@@ -1,11 +1,13 @@
-import gymnasium as gym
+import gymnasium
+from gymnasium.utils.env_checker import check_env
+from gymnasium.wrappers import FlattenObservation
 
 from stable_baselines3 import A2C
 
 from shaping.spec.reward_spec import RewardSpec
 from shaping.tltl_shaping import TLTLWrapper
 
-env = gym.make("CartPole-v1", render_mode="rgb_array")
+env = gymnasium.make("CartPole-v1", render_mode="rgb_array")
 spec = RewardSpec(
     specs=[
         'ensure "x" < 2.4',
@@ -21,6 +23,9 @@ spec = RewardSpec(
     ],
 )
 env = TLTLWrapper(env, spec)
+#env = FlattenObservation(env)
+
+check_env(env, warn=True)
 
 model = A2C("MlpPolicy", env, verbose=1)
 model.learn(total_timesteps=100_000)

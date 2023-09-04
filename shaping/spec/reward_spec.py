@@ -34,8 +34,24 @@ class RequirementSpec:
         return f"{self._operator} {self._predicate}"
 
     def to_rtamt(self):
-        pred_str = "".join([str(token) for token in self._predicate])
+        # unpack predicate
+        proc_fn, var = self._predicate[0]
+        cmp_op = self._predicate[1]
+        threshold_value = self._predicate[2]
 
+        # process var
+        var_str = ""
+        if proc_fn == "abs":
+            var_str = f"abs({var})"
+        elif proc_fn == "exp":
+            var_str = f"exp({var})"
+        elif proc_fn is None:
+            var_str = f"{var}"
+        else:
+            raise ValueError(f"Unknown processing function {proc_fn}")
+        pred_str = f"{var_str} {cmp_op} {threshold_value}"
+
+        # process temporal operator
         if self._operator == "achieve":
             return f"eventually {pred_str}"
         elif self._operator == "conquer":
@@ -93,7 +109,7 @@ class RewardSpec:
                     constant_obj = Constant(*const)
                 else:
                     raise ValueError(f"Constant {const} must be a Constant or a tuple")
-                self._constants[const[0]] = constant_obj
+                self._constants[constant_obj.name] = constant_obj
                 RequirementSpec.transformer.add_constant(name=constant_obj.name, value=constant_obj.value)
 
         # important to do this after constants are set
@@ -131,4 +147,18 @@ class RewardSpec:
             )
             variables.append(var)
 
-        return RewardSpec(specs=specs, variables=variables)
+        constants = []
+        if "constants" in spec:
+            for const_dict in spec["constants"]:
+                assert all(
+                    [k in const_dict for k in ["name", "value"]]
+                ), f"Constant {const_dict} must have keys 'name' and 'value'"
+                desc = const_dict.get("description", "")
+                const = Constant(
+                    name=const_dict["name"],
+                    value=const_dict["value"],
+                    description=desc,
+                )
+                constants.append(const)
+
+        return RewardSpec(specs=specs, variables=variables, constants=constants)

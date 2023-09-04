@@ -1,4 +1,5 @@
 import gymnasium as gym
+from gymnasium.wrappers import FlattenObservation
 
 from stable_baselines3 import A2C
 
@@ -8,6 +9,7 @@ from shaping.tltl_shaping import TLTLWrapper
 env = gym.make("CartPole-v1", render_mode="rgb_array")
 spec = RewardSpec.from_yaml("../configs/CartPole-v1.yaml")
 env = TLTLWrapper(env, spec)
+env = FlattenObservation(env)
 
 model = A2C("MlpPolicy", env, verbose=1)
 model.learn(total_timesteps=100_000)

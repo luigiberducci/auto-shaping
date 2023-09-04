@@ -4,7 +4,7 @@ import gymnasium
 from gymnasium.core import ObsType, WrapperObsType
 
 
-class DictWrapper(gymnasium.Wrapper):
+class DictWrapper(gymnasium.Wrapper, gymnasium.utils.RecordConstructorArgs):
     """
     Converts a vector observation into a dictionary observation.
     """
@@ -12,7 +12,12 @@ class DictWrapper(gymnasium.Wrapper):
     def __init__(
         self, env: gymnasium.Env, variables: list[str], extractor_fn: Callable = None,
     ):
-        super(DictWrapper, self).__init__(env)
+        gymnasium.utils.RecordConstructorArgs.__init__(
+            self,
+            variables=variables,
+            extractor_fn=extractor_fn,
+        )
+        gymnasium.Wrapper.__init__(self, env)
 
         if type(self.observation_space) != gymnasium.spaces.Box:
             raise ValueError("Observation space must be a Box")
@@ -25,12 +30,12 @@ class DictWrapper(gymnasium.Wrapper):
         for i, var in enumerate(variables):
             low = (
                 self.observation_space.low
-                if len(self.observation_space.low.shape) == 1
+                if self.observation_space.low.shape == 1
                 else self.observation_space.low[i]
             )
             high = (
                 self.observation_space.high
-                if len(self.observation_space.high.shape) == 1
+                if self.observation_space.high.shape == 1
                 else self.observation_space.high[i]
             )
             obsspace[var] = gymnasium.spaces.Box(
@@ -41,7 +46,7 @@ class DictWrapper(gymnasium.Wrapper):
 
         if extractor_fn is None:
             extractor_fn = lambda obs, done, info: {
-                v: obs[i] for i, v in enumerate(variables)
+                v: obs[i][None] for i, v in enumerate(variables)
             }
         self._variables = variables
         self._extractor_fn = extractor_fn

@@ -23,6 +23,12 @@ class CollectionWrapper(DictWrapper):
             extractor_fn: Callable = None,
             window_len: int = None,
     ):
+        gymnasium.utils.RecordConstructorArgs.__init__(
+            self,
+            variables=variables,
+            extractor_fn=extractor_fn,
+            window_len=window_len,
+        )
         super(CollectionWrapper, self).__init__(env, variables=variables, extractor_fn=extractor_fn)
 
         self._window_len = window_len
@@ -31,7 +37,7 @@ class CollectionWrapper(DictWrapper):
         self._episode = None
 
     def reset(self, **kwargs):
-        state, info = self.env.reset(**kwargs)
+        state, info = super().reset(**kwargs)
 
         self._episode = {var: deque(maxlen=self._window_len) for var in self._variables}
         if not self._flag_time:

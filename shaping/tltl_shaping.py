@@ -1,3 +1,5 @@
+import warnings
+
 import gymnasium
 
 from shaping.utils.collection_wrapper import CollectionWrapper
@@ -15,15 +17,20 @@ class TLTLWrapper(CollectionWrapper):
     def __init__(
         self, env: gymnasium.Env, spec: RewardSpec,
     ):
+        gymnasium.utils.RecordConstructorArgs.__init__(
+            self,
+            spec=spec,
+        )
+
         reqs = []
         for req_spec in spec.specs:
             try:
                 stl_req = req_spec.to_rtamt()
                 reqs.append(stl_req)
-            except:
-                pass
+            except Exception as e:
+                warnings.warn(f"Failed to parse requirement: {req_spec}, make sure it is a valid STL formula")
         self._stl_spec = " and ".join(reqs)
-        self._variables = spec.variables.keys()
+        self._variables = list(spec.variables.keys())
 
         super(TLTLWrapper, self).__init__(
             env, self._variables,

@@ -17,23 +17,18 @@ class RewardShapingTransformer(Transformer):
 
     def gt(self, s):
         var, val = s
-        var = var.replace('"', "")
-
         return (var, ">", float(val))
 
     def lt(self, s):
         var, val = s
-        var = var.replace('"', "")
         return (var, "<", float(val))
 
     def ge(self, s):
         var, val = s
-        var = var.replace('"', "")
         return (var, ">=", float(val))
 
     def le(self, s):
         var, val = s
-        var = var.replace('"', "")
         return (var, "<=", float(val))
 
     def number(self, n):
@@ -47,6 +42,18 @@ class RewardShapingTransformer(Transformer):
     def neg(self, n):
         (n,) = n
         return -float(n)
+
+    def abs(self, s):
+        var = s[0].value.replace('"', "")
+        return ("abs", var)
+
+    def exp(self, s):
+        var = s[0].value.replace('"', "")
+        return ("exp", var)
+
+    def var(self, s):
+        var = s[0].value.replace('"', "")
+        return (None, var)
 
     def string(self, s):
         var = s[0].value.replace('"', "")

@@ -12,12 +12,17 @@
                    | "conquer" expr -> conquer
 ?comfort_requirement: "encourage" expr -> encourage
 
-?expr: var ">" signed_const    -> gt
-     | var ">=" signed_const   -> ge
-     | var "<" signed_const    -> lt
-     | var "<=" signed_const   -> le
+?expr: fvar ">" signed_const    -> gt
+     | fvar ">=" signed_const   -> ge
+     | fvar "<" signed_const    -> lt
+     | fvar "<=" signed_const   -> le
+
+?fvar: var -> var
+     | "abs" var -> abs
+     | "exp" var -> exp
 
 ?var: ESCAPED_STRING
+
 ?signed_const: const | "+" const -> pos | "-" const -> neg
 ?const: NUMBER -> number | ESCAPED_STRING -> string
 
