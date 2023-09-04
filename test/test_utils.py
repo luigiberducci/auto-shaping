@@ -22,12 +22,12 @@ class TestRTAMTUtils(unittest.TestCase):
         spec.set_var_io_type("req", "input")
         spec.set_var_io_type("gnt", "output")
         spec.spec = "out = ((req>=3) implies (eventually[0:5](gnt>=3)))"
-        try:
-            spec.parse()
-            spec.pastify()
-        except rtamt.RTAMTException as err:
-            print("RTAMT Exception: {}".format(err))
-            exit()
+        #try:
+        spec.parse()
+        spec.pastify()
+        #except rtamt.RTAMTException as err:
+        #    print("RTAMT Exception: {}".format(err))
+        #    exit()
 
         for i in range(len(data1)):
             rob = spec.update(i, [("req", data1["req"][i]), ("gnt", data1["gnt"][i])])
@@ -62,12 +62,12 @@ class TestRTAMTUtils(unittest.TestCase):
         spec.set_var_io_type("req", "input")
         spec.set_var_io_type("gnt", "output")
         spec.spec = "out = ((req>=3) implies (eventually[0:5](gnt>=3)))"
-        try:
-            spec.parse()
-            spec.pastify()
-        except rtamt.RTAMTException as err:
-            print("RTAMT Exception: {}".format(err))
-            exit()
+        #try:
+        spec.parse()
+        spec.pastify()
+        #except rtamt.RTAMTException as err:
+        #    print("RTAMT Exception: {}".format(err))
+        #    exit()
 
         for i in range(len(data1)):
             rob = spec.update(i, [("req", data1["req"][i]), ("gnt", data1["gnt"][i])])

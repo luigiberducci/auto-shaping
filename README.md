@@ -8,7 +8,6 @@
 |--------------------------------------|--------------------|---------------------|--------------------------|--------------------|
 | TLTL<sup>[1]</sup>                   | :x:                | :x:                 | :x:                      | :heavy_check_mark: |
 | BHNR<sup>[2]</sup>                   | :heavy_check_mark: | :x:                 | :x:                      | :x:                |
-| MORL<sup>[3]</sup>                   | :grey_question:    | :heavy_check_mark:  | :grey_question:          | :x:                |
 | HPRS<sup>[4]</sup>                   | :heavy_check_mark: | :heavy_check_mark:  | :heavy_check_mark:       | :x:                |
 | PAM<sup>[4]</sup>                    | :x:                | :heavy_check_mark:  | :heavy_check_mark:       | :x:                |
 | Rank-Preserving Reward<sup>[5]</sup> | :x:                | :heavy_check_mark:  | :heavy_check_mark:       | :x:                |
@@ -35,7 +34,7 @@ and `~` is a comparison operator in `<`, `<=`, `>`, `>=`.
  - [x] Unified Parser
  - [x] Convert from parser to rtamt specs
  - [ ] Test rewards with cartpole, bipedal walker, and lunar lander from exp repo
- - [ ] Add absolute value and exponential functions to spec language
+ - [x] Add absolute value and exponential functions to spec language
  - [ ] Implement PAM metric from HPRS evaluation
  - [ ] Implement rank-preserving reward from rulebook paper
 

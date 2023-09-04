@@ -1,6 +1,6 @@
 gymnasium[classic-control]
+pygame
 opencv-python
 rtamt
 lark
 pyyaml
-numba

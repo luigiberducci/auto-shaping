@@ -1,7 +1,10 @@
+from typing import Union
+
 import gymnasium
 import numpy as np
 
 from shaping import RewardSpec
+from shaping.spec.reward_spec import Variable, Constant
 from shaping.utils.utils import clip_and_norm
 
 _cmp_lambdas = {
@@ -32,13 +35,23 @@ class SparseSuccessRewardWrapper(gymnasium.Wrapper):
     """
 
     def __init__(
-            self, env: gymnasium.Env, spec: RewardSpec,
+            self, env: gymnasium.Env,
+            specs: list[str],
+            variables: list[
+                Union[Variable, tuple[str, float, float], tuple[str, float, float, str]]
+            ],
+            constants: list[
+                Union[Constant, tuple[str, float], tuple[str, float, str]]
+            ] = None,
+
     ):
         super(SparseSuccessRewardWrapper, self).__init__(env)
+
+        self._spec = RewardSpec(specs, variables, constants)
         self._target_specs = [
-            spec for spec in spec.specs if spec._operator in ["achieve", "conquer"]
+            spec for spec in self._spec.specs if spec._operator in ["achieve", "conquer"]
         ]
-        self._variables = spec.variables
+        self._variables = self._spec.variables
 
         assert (
                 type(env.observation_space) == gymnasium.spaces.Dict
@@ -62,21 +75,28 @@ class SparseSuccessRewardWrapper(gymnasium.Wrapper):
 
 class HPRSWrapper(SparseSuccessRewardWrapper):
     def __init__(
-            self, env: gymnasium.Env, spec: RewardSpec, gamma: float = 1.0,
+            self, env: gymnasium.Env, specs: list[str], variables: list[tuple[str, float, float]], constants: list[tuple[str, float]] = None, gamma: float = 0.99
     ):
-        super(HPRSWrapper, self).__init__(env, spec)
-        self._spec = spec
+        gymnasium.utils.RecordConstructorArgs.__init__(
+            self,
+            specs=specs,
+            variables=variables,
+            constants=constants,
+            gamma=gamma,
+        )
+        super(HPRSWrapper, self).__init__(env, specs, variables, constants)
+
         self._gamma = gamma
 
         # safety, target, comfort
         self._safety_specs = [
-            spec for spec in spec.specs if spec._operator in ["ensure"]
+            spec for spec in self._spec.specs if spec._operator in ["ensure"]
         ]
         self._target_spec = [
-            spec for spec in spec.specs if spec._operator in ["achieve", "conquer"]
+            spec for spec in self._spec.specs if spec._operator in ["achieve", "conquer"]
         ]
         self._comfort_specs = [
-            spec for spec in spec.specs if spec._operator in ["encourage"]
+            spec for spec in self._spec.specs if spec._operator in ["encourage"]
         ]
 
         assert (
@@ -85,8 +105,8 @@ class HPRSWrapper(SparseSuccessRewardWrapper):
 
         self._obs = None
 
-    def reset(self):
-        self._obs, info = super().reset()
+    def reset(self, **kwargs):
+        self._obs, info = super().reset(**kwargs)
         return self._obs, info
 
     def step(self, action):

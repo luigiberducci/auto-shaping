@@ -1,8 +1,6 @@
 from typing import Any, List, Dict
 
 import numpy as np
-from numba import njit
-
 
 def monitor_stl_episode(
     stl_spec: str, vars: List[str], episode: Dict[str, Any], types: List[str] = None
@@ -32,7 +30,6 @@ def monitor_stl_episode(
     return robustness_trace
 
 
-@njit(cache=True)
 def clip_and_norm(v: float, minv: float, maxv: float) -> float:
     """
     Normalize value in [0, 1].

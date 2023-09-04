@@ -13,20 +13,17 @@ class TestHPRS(unittest.TestCase):
         env = gymnasium.make("CartPole-v1", render_mode="human")
         env = DictWrapper(env, variables=["x", "x_dot", "theta", "theta_dot"])
 
-        from shaping.spec.reward_spec import RewardSpec
+        specs=['ensure abs "x" <= 2.4',
+               'achieve abs "x" <= 0.05',
+               'encourage abs "theta" <= 0.0']
+        variables=[
+            ("x", -2.4, 2.4),
+            ("x_dot", -3.0, 3.0),
+            ("theta", -0.2, 0.2),
+            ("theta_dot", -3.0, 3.0),
+        ]
 
-        spec = RewardSpec(
-            specs=['ensure abs "x" <= 2.4',
-                   'achieve abs "x" <= 0.05',
-                   'encourage abs "theta" <= 0.0'],
-            variables=[
-                ("x", -2.4, 2.4),
-                ("x_dot", -3.0, 3.0),
-                ("theta", -0.2, 0.2),
-                ("theta_dot", -3.0, 3.0),
-            ],
-        )
-        env = HPRSWrapper(env, spec)
+        env = HPRSWrapper(env, specs=specs, variables=variables)
 
         obs, info = env.reset()
         done = False
