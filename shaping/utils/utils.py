@@ -2,6 +2,7 @@ from typing import Any, List, Dict
 
 import numpy as np
 
+
 def monitor_stl_episode(
     stl_spec: str, vars: List[str], episode: Dict[str, Any], types: List[str] = None
 ):

@@ -94,7 +94,9 @@ class RewardSpec:
                 ), f"Variable {var[0]} has min value greater than max value"
                 variable_obj = Variable(*var)
             else:
-                raise ValueError(f"Variable {var} must be a Variable or a tuple, got {type(var)}")
+                raise ValueError(
+                    f"Variable {var} must be a Variable or a tuple, got {type(var)}"
+                )
             self._variables[var[0]] = variable_obj
 
         self._constants = {}
@@ -111,11 +113,12 @@ class RewardSpec:
                 else:
                     raise ValueError(f"Constant {const} must be a Constant or a tuple")
                 self._constants[constant_obj.name] = constant_obj
-                RequirementSpec.transformer.add_constant(name=constant_obj.name, value=constant_obj.value)
+                RequirementSpec.transformer.add_constant(
+                    name=constant_obj.name, value=constant_obj.value
+                )
 
         # important to do this after constants are set
         self._specs = [RequirementSpec(sp) for sp in specs]
-
 
     @property
     def specs(self) -> List[RequirementSpec]:

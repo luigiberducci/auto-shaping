@@ -17,17 +17,14 @@ class CollectionWrapper(gymnasium.Wrapper, gymnasium.utils.RecordConstructorArgs
     """
 
     def __init__(
-            self,
-            env: gymnasium.Env,
-            variables: List[str],
-            extractor_fn: Callable = None,
-            window_len: int = None,
+        self,
+        env: gymnasium.Env,
+        variables: List[str],
+        extractor_fn: Callable = None,
+        window_len: int = None,
     ):
         gymnasium.utils.RecordConstructorArgs.__init__(
-            self,
-            variables=variables,
-            extractor_fn=extractor_fn,
-            window_len=window_len,
+            self, variables=variables, extractor_fn=extractor_fn, window_len=window_len,
         )
 
         if isinstance(env.observation_space, gymnasium.spaces.Box):

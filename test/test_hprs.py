@@ -13,10 +13,12 @@ class TestHPRS(unittest.TestCase):
         env = gymnasium.make("CartPole-v1", render_mode="human")
         env = DictWrapper(env, variables=["x", "x_dot", "theta", "theta_dot"])
 
-        specs=['ensure abs "x" <= 2.4',
-               'achieve abs "x" <= 0.05',
-               'encourage abs "theta" <= 0.0']
-        variables=[
+        specs = [
+            'ensure abs "x" <= 2.4',
+            'achieve abs "x" <= 0.05',
+            'encourage abs "theta" <= 0.0',
+        ]
+        variables = [
             ("x", -2.4, 2.4),
             ("x_dot", -3.0, 3.0),
             ("theta", -0.2, 0.2),
@@ -33,4 +35,3 @@ class TestHPRS(unittest.TestCase):
             print(reward)
 
         env.close()
-

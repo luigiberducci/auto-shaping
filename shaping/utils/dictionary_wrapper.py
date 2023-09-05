@@ -13,9 +13,7 @@ class DictWrapper(gymnasium.Wrapper, gymnasium.utils.RecordConstructorArgs):
         self, env: gymnasium.Env, variables: list[str], extractor_fn: Callable = None,
     ):
         gymnasium.utils.RecordConstructorArgs.__init__(
-            self,
-            variables=variables,
-            extractor_fn=extractor_fn,
+            self, variables=variables, extractor_fn=extractor_fn,
         )
         gymnasium.Wrapper.__init__(self, env)
 
@@ -51,9 +49,7 @@ class DictWrapper(gymnasium.Wrapper, gymnasium.utils.RecordConstructorArgs):
         self._variables = variables
         self._extractor_fn = extractor_fn
 
-    def step(
-        self, action
-    ) -> tuple[ObsType, float, bool, bool, dict[str, Any]]:
+    def step(self, action) -> tuple[ObsType, float, bool, bool, dict[str, Any]]:
         obs, reward, done, truncated, info = super().step(action)
 
         obs = self._extractor_fn(obs, done, info)

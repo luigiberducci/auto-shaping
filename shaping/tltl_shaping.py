@@ -24,11 +24,7 @@ class TLTLWrapper(CollectionWrapper):
         var_names = [var[0] for var in variables]
         super().__init__(env, variables=var_names)
 
-        self._spec = RewardSpec(
-            specs=specs,
-            variables=variables,
-            constants=constants,
-        )
+        self._spec = RewardSpec(specs=specs, variables=variables, constants=constants,)
 
         reqs = []
         for req_spec in self._spec.specs:
@@ -43,8 +39,7 @@ class TLTLWrapper(CollectionWrapper):
         self._variables = list(self._spec.variables.keys())
 
         super(TLTLWrapper, self).__init__(
-            env,
-            self._variables,
+            env, self._variables,
         )
 
     def _reward(self, obs, done, info):
@@ -52,9 +47,7 @@ class TLTLWrapper(CollectionWrapper):
 
         if done:
             robustness_trace = monitor_stl_episode(
-                self._stl_spec,
-                self._variables,
-                self._episode,
+                self._stl_spec, self._variables, self._episode,
             )
             reward = robustness_trace[0][1]
 

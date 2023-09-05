@@ -7,13 +7,13 @@ from shaping.tltl_shaping import TLTLWrapper
 
 env = gymnasium.make("CartPole-v1", render_mode="rgb_array")
 
-specs=[
+specs = [
     'ensure "x" < 2.4',
     'ensure "x" > -2.4',
     'ensure "theta" < 0.2',
     'ensure "theta" > -0.2',
 ]
-variables=[
+variables = [
     ("x", -2.4, 2.4),
     ("x_dot", -3.0, 3.0),
     ("theta", -0.2, 0.2),

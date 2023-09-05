@@ -4,14 +4,16 @@ from shaping.tltl_shaping import TLTLWrapper
 
 
 class TestTLTL(unittest.TestCase):
-
     def test_cartpole_x(self):
         import gymnasium
 
         env = gymnasium.make("CartPole-v1", render_mode="human")
 
-        specs=['ensure "x" < 2.4', 'ensure "x" > -2.4',]
-        variables=[
+        specs = [
+            'ensure "x" < 2.4',
+            'ensure "x" > -2.4',
+        ]
+        variables = [
             ("x", -2.4, 2.4),
             ("x_dot", -3.0, 3.0),
             ("theta", -0.2, 0.2),
@@ -42,18 +44,18 @@ class TestTLTL(unittest.TestCase):
 
         from shaping.spec.reward_spec import RewardSpec
 
-        specs=[
-                'ensure "x" < 2.4',
-                'ensure "x" > -2.4',
-                'ensure "theta" < 0.2',
-                'ensure "theta" > -0.2',
-            ]
-        variables=[
-                ("x", -2.4, 2.4),
-                ("x_dot", -3.0, 3.0),
-                ("theta", -0.2, 0.2),
-                ("theta_dot", -3.0, 3.0),
-            ]
+        specs = [
+            'ensure "x" < 2.4',
+            'ensure "x" > -2.4',
+            'ensure "theta" < 0.2',
+            'ensure "theta" > -0.2',
+        ]
+        variables = [
+            ("x", -2.4, 2.4),
+            ("x_dot", -3.0, 3.0),
+            ("theta", -0.2, 0.2),
+            ("theta_dot", -3.0, 3.0),
+        ]
 
         env = TLTLWrapper(env, specs=specs, variables=variables)
 

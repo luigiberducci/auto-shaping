@@ -22,10 +22,10 @@ class TestRTAMTUtils(unittest.TestCase):
         spec.set_var_io_type("req", "input")
         spec.set_var_io_type("gnt", "output")
         spec.spec = "out = ((req>=3) implies (eventually[0:5](gnt>=3)))"
-        #try:
+        # try:
         spec.parse()
         spec.pastify()
-        #except rtamt.RTAMTException as err:
+        # except rtamt.RTAMTException as err:
         #    print("RTAMT Exception: {}".format(err))
         #    exit()
 
@@ -62,10 +62,10 @@ class TestRTAMTUtils(unittest.TestCase):
         spec.set_var_io_type("req", "input")
         spec.set_var_io_type("gnt", "output")
         spec.spec = "out = ((req>=3) implies (eventually[0:5](gnt>=3)))"
-        #try:
+        # try:
         spec.parse()
         spec.pastify()
-        #except rtamt.RTAMTException as err:
+        # except rtamt.RTAMTException as err:
         #    print("RTAMT Exception: {}".format(err))
         #    exit()
 
@@ -102,9 +102,7 @@ class TestWrappers(unittest.TestCase):
 
         done = False
         obs, info = env.reset()
-        self.assertTrue(
-            type(obs) == dict, "observation after reset not a dict"
-        )
+        self.assertTrue(type(obs) == dict, "observation after reset not a dict")
 
         while not done:
             action = env.action_space.sample()
