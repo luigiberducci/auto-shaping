@@ -27,11 +27,12 @@ class RequirementSpec:
             logging.debug(f"Loaded grammar from {self.grammar_path}")
 
         tree = self.parser.parse(spec)
+        self._spec = spec
         self._operator = tree.data
         self._predicate = tree.children[0]
 
     def __str__(self):
-        return f"{self._operator} {self._predicate}"
+        return self._spec
 
     def to_rtamt(self):
         # unpack predicate
@@ -93,7 +94,7 @@ class RewardSpec:
                 ), f"Variable {var[0]} has min value greater than max value"
                 variable_obj = Variable(*var)
             else:
-                raise ValueError(f"Variable {var} must be a Variable or a tuple")
+                raise ValueError(f"Variable {var} must be a Variable or a tuple, got {type(var)}")
             self._variables[var[0]] = variable_obj
 
         self._constants = {}
@@ -123,6 +124,10 @@ class RewardSpec:
     @property
     def variables(self) -> dict[str, Variable]:
         return self._variables
+
+    @property
+    def constants(self) -> dict[str, Constant]:
+        return self._constants
 
     @staticmethod
     def from_yaml(file: pathlib.Path) -> "RewardSpec":

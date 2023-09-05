@@ -2,7 +2,7 @@ specs:
   - 'ensure abs "x"<= "x_limit"'
   - 'ensure abs "theta" <= "theta_limit"'
   - 'conquer abs "x" <= "x_center"'
-  - 'encourage "theta" <= "theta_balance"'
+  - 'encourage abs "theta" <= "theta_balance"'
 
 constants:
   - name: x_limit

@@ -35,26 +35,28 @@ class SparseSuccessRewardWrapper(gymnasium.Wrapper):
     """
 
     def __init__(
-            self, env: gymnasium.Env,
-            specs: list[str],
-            variables: list[
-                Union[Variable, tuple[str, float, float], tuple[str, float, float, str]]
-            ],
-            constants: list[
-                Union[Constant, tuple[str, float], tuple[str, float, str]]
-            ] = None,
-
+        self,
+        env: gymnasium.Env,
+        specs: list[str],
+        variables: list[
+            Union[Variable, tuple[str, float, float], tuple[str, float, float, str]]
+        ],
+        constants: list[
+            Union[Constant, tuple[str, float], tuple[str, float, str]]
+        ] = None,
     ):
         super(SparseSuccessRewardWrapper, self).__init__(env)
 
         self._spec = RewardSpec(specs, variables, constants)
         self._target_specs = [
-            spec for spec in self._spec.specs if spec._operator in ["achieve", "conquer"]
+            spec
+            for spec in self._spec.specs
+            if spec._operator in ["achieve", "conquer"]
         ]
         self._variables = self._spec.variables
 
         assert (
-                type(env.observation_space) == gymnasium.spaces.Dict
+            type(env.observation_space) == gymnasium.spaces.Dict
         ), "Observation space must be a dictionary, use DictWrapper"
 
     def _reward(self, state, action, next_state, done, info):
@@ -75,7 +77,12 @@ class SparseSuccessRewardWrapper(gymnasium.Wrapper):
 
 class HPRSWrapper(SparseSuccessRewardWrapper):
     def __init__(
-            self, env: gymnasium.Env, specs: list[str], variables: list[tuple[str, float, float]], constants: list[tuple[str, float]] = None, gamma: float = 0.99
+        self,
+        env: gymnasium.Env,
+        specs: list[str],
+        variables: list[tuple[str, float, float]],
+        constants: list[tuple[str, float]] = None,
+        gamma: float = 0.99,
     ):
         gymnasium.utils.RecordConstructorArgs.__init__(
             self,
@@ -93,14 +100,16 @@ class HPRSWrapper(SparseSuccessRewardWrapper):
             spec for spec in self._spec.specs if spec._operator in ["ensure"]
         ]
         self._target_spec = [
-            spec for spec in self._spec.specs if spec._operator in ["achieve", "conquer"]
+            spec
+            for spec in self._spec.specs
+            if spec._operator in ["achieve", "conquer"]
         ]
         self._comfort_specs = [
             spec for spec in self._spec.specs if spec._operator in ["encourage"]
         ]
 
         assert (
-                len(self._target_spec) == 1
+            len(self._target_spec) == 1
         ), f"There should be exactly one target specification, got {len(self._target_spec)}"
 
         self._obs = None
