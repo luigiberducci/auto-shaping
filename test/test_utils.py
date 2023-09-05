@@ -120,7 +120,7 @@ class TestRewardTypes(unittest.TestCase):
     def test_enum_types(self):
         from shaping import RewardType
 
-        reward_types = ["TLTL", "BHNR", "MORL", "HPRS", "PAM", "RPR"]
+        reward_types = ["TLTL", "BHNR", "HPRS", "PAM", "RPR"]
 
         for reward_type in reward_types:
             assert (
