@@ -1,6 +1,11 @@
 [![Logo](docs/logo.svg)](https://github.com/luigiberducci/auto-shaping)
 
-<h2 align="center">Specification-based library for automatic reward shaping.</h2>
+<h2 align="center">
+Specification-based library for automatic reward shaping.
+</h2>
+
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+[![Code style: black](https://img.shields.io/badge/code%20style-black-000000.svg)](https://github.com/psf/black)
 
 
 ## Methods
