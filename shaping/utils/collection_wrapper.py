@@ -6,7 +6,7 @@ import gymnasium
 from shaping.utils.dictionary_wrapper import DictWrapper
 
 
-class CollectionWrapper(DictWrapper):
+class CollectionWrapper(gymnasium.Wrapper, gymnasium.utils.RecordConstructorArgs):
     """
     Collects k-th most recent observable varibles over an episode.
 
@@ -29,8 +29,14 @@ class CollectionWrapper(DictWrapper):
             extractor_fn=extractor_fn,
             window_len=window_len,
         )
-        super(CollectionWrapper, self).__init__(env, variables=variables, extractor_fn=extractor_fn)
 
+        if isinstance(env.observation_space, gymnasium.spaces.Box):
+            self._env = DictWrapper(env, variables=variables, extractor_fn=extractor_fn)
+
+        super(CollectionWrapper, self).__init__(env)
+
+        self._variables = variables
+        self._extractor_fn = extractor_fn
         self._window_len = window_len
         self._flag_time = "time" in self._variables
         self._time = None

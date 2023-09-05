@@ -40,10 +40,10 @@ and `~` is a comparison operator in `<`, `<=`, `>`, `>=`.
 
 
 ## Examples
- - [ ] Integration with gymnasium
+ - [x] Integration with gymnasium
  - [x] Integration with stable-baselines3
  - [ ] Integration with safety-gym
- - [ ] Use of predefined env specs
+ - [x] Use of predefined env specs
  - [x] Use of custom env specs
 
 
