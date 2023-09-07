@@ -4,18 +4,21 @@
 Specification-based library for automatic reward shaping.
 </h2>
 
-[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
-[![Code style: black](https://img.shields.io/badge/code%20style-black-000000.svg)](https://github.com/psf/black)
+<p align="center">
+<a href="https://opensource.org/licenses/MIT"><img alt="License" src="https://img.shields.io/badge/License-MIT-yellow.svg"></a>
+<a href="https://python.org"><img alt="Python 3.10" src="https://img.shields.io/badge/python-3.10-blue.svg"></a>
+<a href="https://github.com/psf/black"><img alt="Code style: black" src="https://img.shields.io/badge/code%20style-black-000000.svg"></a>
+</p>
 
 
 ## Methods
-| Method                               | Dense Signal       | Multi-Objective     | Objective Prioritization | Implemented        |
-|--------------------------------------|--------------------|---------------------|--------------------------|--------------------|
-| TLTL<sup>[1]</sup>                   | :x:                | :x:                 | :x:                      | :heavy_check_mark: |
-| BHNR<sup>[2]</sup>                   | :heavy_check_mark: | :x:                 | :x:                      | :x:                |
-| HPRS<sup>[4]</sup>                   | :heavy_check_mark: | :heavy_check_mark:  | :heavy_check_mark:       | :x:                |
-| PAM<sup>[4]</sup>                    | :x:                | :heavy_check_mark:  | :heavy_check_mark:       | :x:                |
-| Rank-Preserving Reward<sup>[5]</sup> | :x:                | :heavy_check_mark:  | :heavy_check_mark:       | :x:                |
+| Method                               | Dense Signal       | Multi-Objective     | Objective Prioritization | Implemented         |
+|--------------------------------------|--------------------|---------------------|--------------------------|---------------------|
+| TLTL<sup>[1]</sup>                   | :x:                | :x:                 | :x:                      | :heavy_check_mark:  |
+| BHNR<sup>[2]</sup>                   | :heavy_check_mark: | :x:                 | :x:                      | :x:                 |
+| HPRS<sup>[4]</sup>                   | :heavy_check_mark: | :heavy_check_mark:  | :heavy_check_mark:       | :heavy_check_mark:  |
+| PAM<sup>[4]</sup>                    | :x:                | :heavy_check_mark:  | :heavy_check_mark:       | :x:                 |
+| Rank-Preserving Reward<sup>[5]</sup> | :x:                | :heavy_check_mark:  | :heavy_check_mark:       | :x:                 |
 
 :heavy_check_mark: Yes
 
@@ -33,24 +36,18 @@ requirement ::= ensure <formula> | achieve <formula> | conquer <formula> | encou
 where `f` is a function of the state dictionary `state` 
 and `~` is a comparison operator in `<`, `<=`, `>`, `>=`.
 
-
-## TODOs
- - [x] Re-implement HPRS with automatic normalization 
- - [x] Unified Parser
- - [x] Convert from parser to rtamt specs
- - [ ] Test rewards with cartpole, bipedal walker, and lunar lander from exp repo
- - [x] Add absolute value and exponential functions to spec language
- - [ ] Implement PAM metric from HPRS evaluation
- - [ ] Implement rank-preserving reward from rulebook paper
-
-
-## Examples
- - [x] Integration with gymnasium
- - [x] Integration with stable-baselines3
- - [ ] Integration with safety-gym
- - [x] Use of predefined env specs
- - [x] Use of custom env specs
-
+# Citation
+If you use this code in your research, please cite the following paper:
+```
+@misc{berducci2022hierarchical,
+    title={Hierarchical Potential-based Reward Shaping from Task Specifications}, 
+    author={Luigi Berducci and Edgar A. Aguilar and Dejan Ničković and Radu Grosu},
+    year={2022},
+    eprint={2110.02792},
+    archivePrefix={arXiv},
+    primaryClass={cs.LG}
+}
+```
 
 # References
 [1] "Reinforcement learning with temporal logic rewards." Li, et al. IROS 2017.
