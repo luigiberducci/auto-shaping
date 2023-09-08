@@ -36,6 +36,17 @@ requirement ::= ensure <formula> | achieve <formula> | conquer <formula> | encou
 where `f` is a function of the state dictionary `state` 
 and `~` is a comparison operator in `<`, `<=`, `>`, `>=`.
 
+## Examples
+To run the examples, ensure to install the extra requirements:
+```
+pip install -r examples/requirements.txt
+```
+
+Then, you can train an agent with `stable-baselines3` and `auto-shaping`
+1. using default specifications from the configuration file in `configs/`
+2. using a custom specification by passing it as an argument
+3. benchmarking the agent with multiple reward shaping
+
 # Citation
 If you use this code in your research, please cite the following paper:
 ```
