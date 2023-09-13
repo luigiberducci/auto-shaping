@@ -68,8 +68,11 @@ class SparseSuccessRewardWrapper(gymnasium.Wrapper):
     def _reward(self, state, action, next_state, done, info):
         reward = 0.0
         for target_spec in self._target_specs:
-            (fn, var), aritm_op, threshold = target_spec._predicate
-            cmp_lambda = _cmp_lambdas[aritm_op]
+            predicate = target_spec._predicate
+            fn, var = predicate._variable
+            cmp_op = predicate._operator
+            threshold = predicate._value
+            cmp_lambda = _cmp_lambdas[cmp_op]
             val = eval_var(next_state, var, fn)
 
             reward += float(cmp_lambda(val, threshold))
@@ -153,8 +156,11 @@ class HPRSWrapper(SparseSuccessRewardWrapper):
         reward = 0.0
 
         for spec in self._safety_specs:
-            (fn, var), aritm_op, threshold = spec._predicate
-            cmp_lambda = _cmp_lambdas[aritm_op]
+            predicate = spec._predicate
+            fn, var = predicate._variable
+            cmp_op = predicate._operator
+            threshold = predicate._value
+            cmp_lambda = _cmp_lambdas[cmp_op]
             val = eval_var(state, var, fn)
 
             reward += float(cmp_lambda(val, threshold))
@@ -166,22 +172,29 @@ class HPRSWrapper(SparseSuccessRewardWrapper):
 
         safety_weight = 0.0
         for spec in self._safety_specs:
-            (fn, var), aritm_op, threshold = spec._predicate
-            cmp_lambda = _cmp_lambdas[aritm_op]
+            predicate = spec._predicate
+            fn, var = predicate._variable
+            cmp_op = predicate._operator
+            threshold = predicate._value
+            cmp_lambda = _cmp_lambdas[cmp_op]
             val = eval_var(state, var, fn)
 
             safety_weight *= float(cmp_lambda(val, threshold))
 
         for spec in self._target_spec:
-            (fn, var), aritm_op, threshold = spec._predicate
+            predicate = spec._predicate
+            fn, var = predicate._variable
+            cmp_op = predicate._operator
+            threshold = predicate._value
+
             val = eval_var(state, var, fn)
 
             minv = self._variables[var].min
             maxv = self._variables[var].max
 
-            if aritm_op in [">", ">="]:
+            if cmp_op in [">", ">="]:
                 target_reward = clip_and_norm(val, minv, threshold)
-            elif aritm_op in ["<", "<="]:
+            elif cmp_op in ["<", "<="]:
                 target_reward = 1.0 - clip_and_norm(val, threshold, maxv)
 
             reward += safety_weight * target_reward
@@ -193,37 +206,46 @@ class HPRSWrapper(SparseSuccessRewardWrapper):
 
         safety_weight = 1.0
         for spec in self._safety_specs:
-            (fn, var), aritm_op, threshold = spec._predicate
-            cmp_lambda = _cmp_lambdas[aritm_op]
+            predicate = spec._predicate
+            fn, var = predicate._variable
+            cmp_op = predicate._operator
+            threshold = predicate._value
+            cmp_lambda = _cmp_lambdas[cmp_op]
             val = eval_var(state, var, fn)
 
             safety_weight *= float(cmp_lambda(val, threshold))
 
         target_weight = 1.0
         for spec in self._target_spec:
-            (fn, var), aritm_op, threshold = spec._predicate
+            predicate = spec._predicate
+            fn, var = predicate._variable
+            cmp_op = predicate._operator
+            threshold = predicate._value
             val = eval_var(state, var, fn)
 
             minv = self._variables[var].min
             maxv = self._variables[var].max
 
-            if aritm_op in [">", ">="]:
+            if cmp_op in [">", ">="]:
                 target_reward = clip_and_norm(val, minv, threshold)
-            elif aritm_op in ["<", "<="]:
+            elif cmp_op in ["<", "<="]:
                 target_reward = 1.0 - clip_and_norm(val, threshold, maxv)
 
             target_weight *= target_reward
 
         for spec in self._comfort_specs:
-            (fn, var), aritm_op, threshold = spec._predicate
+            predicate = spec._predicate
+            fn, var = predicate._variable
+            cmp_op = predicate._operator
+            threshold = predicate._value
             val = eval_var(state, var, fn)
 
             minv = self._variables[var].min
             maxv = self._variables[var].max
 
-            if aritm_op in [">", ">="]:
+            if cmp_op in [">", ">="]:
                 comfort_reward = clip_and_norm(val, minv, threshold)
-            elif aritm_op in ["<", "<="]:
+            elif cmp_op in ["<", "<="]:
                 comfort_reward = 1.0 - clip_and_norm(val, threshold, maxv)
 
             reward += safety_weight * target_weight * comfort_reward

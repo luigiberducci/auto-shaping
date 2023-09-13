@@ -1,6 +1,7 @@
 import unittest
 
 from shaping.tltl_shaping import TLTLWrapper
+from shaping.utils.dictionary_wrapper import DictWrapper
 
 
 class TestTLTL(unittest.TestCase):
@@ -20,6 +21,8 @@ class TestTLTL(unittest.TestCase):
             ("theta_dot", -3.0, 3.0),
         ]
 
+        var_names = [v for v, l, u in variables]
+        env = DictWrapper(env, variables=var_names)
         env = TLTLWrapper(env, specs=specs, variables=variables)
 
         obs, info = env.reset()
@@ -42,8 +45,6 @@ class TestTLTL(unittest.TestCase):
 
         env = gymnasium.make("CartPole-v1", render_mode="human")
 
-        from shaping.spec.reward_spec import RewardSpec
-
         specs = [
             'ensure "x" < 2.4',
             'ensure "x" > -2.4',
@@ -57,6 +58,8 @@ class TestTLTL(unittest.TestCase):
             ("theta_dot", -3.0, 3.0),
         ]
 
+        var_names = [v for v, l, u in variables]
+        env = DictWrapper(env, variables=var_names)
         env = TLTLWrapper(env, specs=specs, variables=variables)
 
         obs, info = env.reset()
