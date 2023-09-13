@@ -20,8 +20,8 @@ import shaping
 
 seed = 42
 env_id = "CartPole-v1"
-total_timesteps = 50_000
-eval_freq = 1000
+total_timesteps = 100_000
+eval_freq = 5000
 outdir = "exp"
 
 # create eval env with the default environment
@@ -31,7 +31,7 @@ eval_env = FlattenObservation(eval_env)
 
 # train
 results = {}
-for reward in ["default", "TLTL", "HPRS"]:
+for reward in ["PAM", "default", "TLTL", "HPRS"]:
     print(f"Training with {reward} reward shaping")
 
     # seed for reproducibility
@@ -45,8 +45,8 @@ for reward in ["default", "TLTL", "HPRS"]:
     # train model and save results to logdir
     logdir = f"{outdir}/PPO-{env_id}-{reward}"
     eval_callback = EvalCallback(eval_env, log_path=logdir, eval_freq=eval_freq)
-    model = PPO("MlpPolicy", train_env, seed=seed, tensorboard_log=logdir, verbose=0)
-    model.learn(total_timesteps=total_timesteps, callback=eval_callback, progress_bar=True)
+    model = PPO("MlpPolicy", train_env, seed=seed, tensorboard_log=logdir, verbose=1)
+    model.learn(total_timesteps=total_timesteps, callback=eval_callback)
 
     # read results from logdir
     results[reward] = {}

@@ -1,4 +1,4 @@
-from typing import Any, List, Dict
+from typing import Any, List, Dict, TypeVar
 
 import numpy as np
 
@@ -50,3 +50,23 @@ def clip_and_norm(v: float, minv: float, maxv: float) -> float:
         v = maxv
 
     return (v - minv) / (maxv - minv)
+
+
+KeyType = TypeVar("KeyType")
+
+
+def deep_update(
+    mapping: dict[KeyType, Any], *updating_mappings: Dict[KeyType, Any]
+) -> Dict[KeyType, Any]:
+    updated_mapping = mapping.copy()
+    for updating_mapping in updating_mappings:
+        for k, v in updating_mapping.items():
+            if (
+                k in updated_mapping
+                and isinstance(updated_mapping[k], dict)
+                and isinstance(v, dict)
+            ):
+                updated_mapping[k] = deep_update(updated_mapping[k], v)
+            else:
+                updated_mapping[k] = v
+    return updated_mapping
