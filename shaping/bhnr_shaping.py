@@ -1,7 +1,8 @@
 """
-Robustness-based reward shaping from:
-"Reinforcement Learning With Temporal Logic Rewards" by Li, Vasile, and Belta (IROS, 2017)
-https://arxiv.org/abs/1612.03471
+Bounded Robustness-based reward shaping from:
+"Structured Reward Shaping using Signal Temporal Logic specifications" by Balakrishnan, and Deshmukh (IROS, 2019)
+
+https://ieeexplore.ieee.org/document/8968254
 """
 
 import warnings
@@ -10,19 +11,25 @@ import gymnasium
 
 from shaping.utils.collection_wrapper import CollectionWrapper
 from shaping.spec.reward_spec import RewardSpec
-from shaping.utils.utils import monitor_stl_episode
+from shaping.utils.utils import monitor_stl_episode, deep_update
 
 
-class TLTLWrapper(CollectionWrapper):
+class BHNRWrapper(CollectionWrapper):
     def __init__(
         self,
         env: gymnasium.Env,
         specs: list[str],
         variables: list[tuple[str, float, float]],
         constants: list[tuple[str, float]] = None,
+        params: dict[str, float] = None,
     ):
+        self._params = {
+            "window_length": 10,
+        }
+        deep_update(self._params, params or {})
+
         var_names = [var[0] for var in variables]
-        super().__init__(env, variables=var_names)
+        super().__init__(env, variables=var_names, window_len=self._params["window_length"])
 
         self._spec = RewardSpec(
             specs=specs,
@@ -40,6 +47,12 @@ class TLTLWrapper(CollectionWrapper):
                     f"Failed to parse requirement: {req_spec}, make sure it is a valid STL formula"
                 )
         self._stl_spec = " and ".join(reqs)
+        self._variables = list(self._spec.variables.keys())
+
+        super(BHNRWrapper, self).__init__(
+            env,
+            self._variables,
+        )
 
     def _reward(self, obs, done, info):
         reward = 0.0

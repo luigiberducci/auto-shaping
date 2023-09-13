@@ -1,3 +1,9 @@
+"""
+Hierarchical Potential-based Reward Shaping from:
+"Hierarchical Potential-based Reward Shaping from Task Specifications" by Berducci et al., (arxiv, 2021)
+https://arxiv.org/abs/2110.02792
+"""
+
 from typing import Union
 
 import gymnasium
@@ -5,7 +11,7 @@ import numpy as np
 
 from shaping import RewardSpec
 from shaping.spec.reward_spec import Variable, Constant
-from shaping.utils.utils import clip_and_norm
+from shaping.utils.utils import clip_and_norm, deep_update
 
 _cmp_lambdas = {
     "<": lambda x, y: x < y,
@@ -82,14 +88,17 @@ class HPRSWrapper(SparseSuccessRewardWrapper):
         specs: list[str],
         variables: list[tuple[str, float, float]],
         constants: list[tuple[str, float]] = None,
-        gamma: float = 0.99,
+        params: dict[str, float] = None,
     ):
+        self._params = {
+            "gamma": 1.00,
+        }
+        deep_update(self._params, params or {})
+
         gymnasium.utils.RecordConstructorArgs.__init__(
-            self, specs=specs, variables=variables, constants=constants, gamma=gamma,
+            self, specs=specs, variables=variables, constants=constants, gamma=self._params["gamma"]
         )
         super(HPRSWrapper, self).__init__(env, specs, variables, constants)
-
-        self._gamma = gamma
 
         # safety, target, comfort
         self._safety_specs = [
@@ -127,13 +136,14 @@ class HPRSWrapper(SparseSuccessRewardWrapper):
             return base_reward
 
         # hierarchical shaping
-        safety_shaping = self._gamma * self._safety_shaping(
+        gamma = self._params["gamma"]
+        safety_shaping = gamma * self._safety_shaping(
             next_state
         ) - self._safety_shaping(state)
-        target_shaping = self._gamma * self._target_shaping(
+        target_shaping = gamma * self._target_shaping(
             next_state
         ) - self._target_shaping(state)
-        comfort_shaping = self._gamma * self._comfort_shaping(
+        comfort_shaping = gamma * self._comfort_shaping(
             next_state
         ) - self._comfort_shaping(state)
 
