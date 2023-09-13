@@ -70,3 +70,7 @@ def deep_update(
             else:
                 updated_mapping[k] = v
     return updated_mapping
+
+
+def sigmoid(x: float) -> float:
+    return 1.0 / (1.0 + np.exp(-x))

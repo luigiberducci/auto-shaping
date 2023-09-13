@@ -5,6 +5,7 @@ from typing import Union
 import gymnasium
 
 from shaping.pam_shaping import PAMWrapper
+from shaping.rpr_shaping import RPRWrapper
 from shaping.spec.reward_spec import RewardSpec
 from shaping.tltl_shaping import TLTLWrapper
 from shaping.hprs_shaping import HPRSWrapper
@@ -13,6 +14,7 @@ __entry_points__ = {
     "TLTL": TLTLWrapper,
     "HPRS": HPRSWrapper,
     "PAM": PAMWrapper,
+    "RPR": RPRWrapper,
 }
 
 
