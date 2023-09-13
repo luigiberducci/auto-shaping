@@ -3,7 +3,8 @@ from gymnasium.wrappers import FlattenObservation
 
 from stable_baselines3 import A2C
 
-from shaping.tltl_shaping import TLTLWrapper
+import shaping
+from shaping import RewardSpec
 
 env = gymnasium.make("CartPole-v1", render_mode="rgb_array")
 
@@ -19,8 +20,9 @@ variables = [
     ("theta", -0.2, 0.2),
     ("theta_dot", -3.0, 3.0),
 ]
+spec = RewardSpec(specs=specs, variables=variables)
 
-env = TLTLWrapper(env, specs=specs, variables=variables)
+env = shaping.wrap(env=env, reward="TLTL", spec=spec)
 env = FlattenObservation(env)
 
 model = A2C("MlpPolicy", env, verbose=1)
