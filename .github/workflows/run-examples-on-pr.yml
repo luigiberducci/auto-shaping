@@ -29,5 +29,6 @@ jobs:
 
     - name: Run script
       run: |
-        PYTHONPATH=. python examples/train_custom_spec_sb3.py
-        PYTHONPATH=. python examples/train_file_spec_sb3.py
+        cd examples
+        PYTHONPATH=.. python examples/train_custom_spec_sb3.py
+        PYTHONPATH=.. python examples/train_file_spec_sb3.py
