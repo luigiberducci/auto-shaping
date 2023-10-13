@@ -1,0 +1,31 @@
+name: Run Unit Tests
+
+on:
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  test-python-script:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Check out code
+      uses: actions/checkout@v3
+      with:
+        submodules: 'recursive'
+
+    - name: Set up Python
+      uses: actions/setup-python@v3
+      with:
+        python-version: '3.10'
+        cache: 'pip'
+
+    - name: Install base dependencies
+      run: pip install -r requirements.txt
+
+    - name: Install extra dependencies
+      run: pip install -r examples/requirements.txt
+
+    - name: Run script
+      run: PYTHONPATH=. python examples/example.py
