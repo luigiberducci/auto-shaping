@@ -4,27 +4,28 @@ import gymnasium
 
 from shaping.utils.collection_wrapper import CollectionWrapper
 from shaping.spec.reward_spec import RewardSpec
-from shaping.utils.utils import monitor_stl_episode
+from shaping.utils.utils import monitor_stl_episode, monitor_filtering_stl_episode
 
 
-class TLTLWrapper(CollectionWrapper):
+class BHNRWrapper(CollectionWrapper):
     """
     Robustness-based reward shaping from:
-    "Reinforcement Learning With Temporal Logic Rewards" by Li, Vasile, and Belta (2016)
-    https://arxiv.org/abs/1612.03471
+    "Structured Reward Shaping using Signal Temporal Logic specification" by Balakrishnan, and Deshmukh (2019)
+    https://ieeexplore.ieee.org/document/8968254
     """
 
     def __init__(
-        self,
-        env: gymnasium.Env,
-        specs: list[str],
-        variables: list[tuple[str, float, float]],
-        constants: list[tuple[str, float]] = None,
+            self,
+            env: gymnasium.Env,
+            specs: list[str],
+            variables: list[tuple[str, float, float]],
+            constants: list[tuple[str, float]] = None,
+            window_len: int = 10,
     ):
         var_names = [var[0] for var in variables]
         super().__init__(env, variables=var_names)
 
-        self._spec = RewardSpec(specs=specs, variables=variables, constants=constants,)
+        self._spec = RewardSpec(specs=specs, variables=variables, constants=constants, )
 
         reqs = []
         for req_spec in self._spec.specs:
@@ -33,20 +34,22 @@ class TLTLWrapper(CollectionWrapper):
                 reqs.append(stl_req)
             except Exception as e:
                 warnings.warn(
-                    f"Failed to parse requirement: {req_spec}, if comfort requirement no worries because it is not supported by STL"
+                    f"Failed to parse requirement: {req_spec}, make sure it is a valid STL formula"
                 )
         self._stl_spec = " and ".join(reqs)
         self._variables = list(self._spec.variables.keys())
 
-        super(TLTLWrapper, self).__init__(
+        super(BHNRWrapper, self).__init__(
             env, self._variables,
+            window_len=window_len,
         )
 
     def _reward(self, obs, done, info):
         reward = 0.0
 
-        if done:
-            robustness_trace = monitor_stl_episode(
+        # compute robustness if episode is at least 2 steps long
+        if len(self._episode["time"]) > 1:
+            robustness_trace = monitor_filtering_stl_episode(
                 self._stl_spec, self._variables, self._episode,
             )
             reward = robustness_trace[0][1]

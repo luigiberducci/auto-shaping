@@ -8,7 +8,10 @@ the same for all methods.
 The results are saved to the `exp` directory and the learning curves saved to `exp/learning_curves.png`.
 """
 
-import numpy as np
+import os
+import time
+import logging
+
 from gymnasium.wrappers import FlattenObservation
 
 from stable_baselines3 import PPO
@@ -16,39 +19,85 @@ from stable_baselines3.common.callbacks import EvalCallback
 from stable_baselines3.common.evaluation import evaluate_policy
 from stable_baselines3.common.utils import set_random_seed
 
+import wandb
+from wandb.integration.sb3 import WandbCallback
+
+from training.callbacks.video_recorder_cb import VideoRecorderCallback
+
+logging.basicConfig(level=logging.INFO)
+os.environ["WANDB_MODE"] = "online"
+
 import shaping
 
-seed = 42
-env_id = "CartPole-v1"
-total_timesteps = 50_000
-eval_freq = 1000
-outdir = "exp"
+config = {
+    "env_id": "CartPole-v1",
+    "evaluation": {
+        "reward": "default",
+        "frequency": 2500,
+    },
+    "training": {
+        "reward": None,  # set in loop
+        "total_timesteps": 50000,
+    },
+    "outdir": "exp",
+    "seed": 42,
+}
 
 # create eval env with the default environment
 # pass through wrap() instead of directly gym.make() to ensure same obs/act spaces
-eval_env = shaping.wrap(env=env_id, reward="default", env_kwargs={"render_mode": None})
+eval_cfg = config["evaluation"]
+eval_env = shaping.wrap(env=config["env_id"], reward=eval_cfg["reward"], env_kwargs={"render_mode": "rgb_array"})
 eval_env = FlattenObservation(eval_env)
 
 # train
 results = {}
-for reward in ["default", "TLTL", "HPRS"]:
+group_id = f"group-{int(time.time())}"
+for reward in ["default", "TLTL", "BHNR", "HPRS"]:
     print(f"Training with {reward} reward shaping")
 
+    # set up config
+    cfg = config.copy()
+    cfg["training"]["reward"] = reward
+
+    # logging
+    run = wandb.init(
+        entity="luigiberducci",
+        project="auto-shaping",
+        name=f"{cfg['env_id']}-{reward}",
+        group=group_id,
+        config=cfg,
+        sync_tensorboard=True,  # auto-upload sb3's tensorboard metrics
+        monitor_gym=True,  # auto-upload the videos of agents playing the game
+        save_code=False,  # optional
+    )
+
     # seed for reproducibility
+    seed = cfg["seed"]
     eval_env.reset(seed=seed)
     set_random_seed(seed)
 
     # create train env with the desired reward
-    train_env = shaping.wrap(env=env_id, reward=reward)
+    train_cfg = cfg["training"]
+    train_env = shaping.wrap(env=cfg["env_id"], reward=train_cfg["reward"])
     train_env = FlattenObservation(train_env)
 
     # train model and save results to logdir
-    logdir = f"{outdir}/PPO-{env_id}-{reward}"
-    eval_callback = EvalCallback(eval_env, log_path=logdir, eval_freq=eval_freq)
-    model = PPO("MlpPolicy", train_env, seed=seed, tensorboard_log=logdir, verbose=0)
-    model.learn(total_timesteps=total_timesteps, callback=eval_callback, progress_bar=True)
+    logdir = f"{cfg['outdir']}/group-{group_id}/PPO-{cfg['env_id']}-{reward}"
+    eval_callback = EvalCallback(eval_env, log_path=logdir, eval_freq=eval_cfg["frequency"])
+    wand_callback = WandbCallback(
+        model_save_path=f"{logdir}/models",
+        verbose=2,
+    )
+    video_callback = VideoRecorderCallback(eval_env, n_eval_episodes=1, render_freq=eval_cfg["frequency"],
+                                           video_folder=f"{logdir}/videos")
+    model = PPO("MlpPolicy", train_env, seed=seed, tensorboard_log=logdir, verbose=1)
+    model.learn(total_timesteps=train_cfg["total_timesteps"],
+                callback=[eval_callback, wand_callback, video_callback])
+
+    run.finish()
 
     # read results from logdir
+    """
     results[reward] = {}
     with open(f"{logdir}/evaluations.npz", "rb") as f:
         data = np.load(f)
@@ -62,7 +111,9 @@ for reward in ["default", "TLTL", "HPRS"]:
 
     print(f"Reward: {np.mean(rewards):.2f} +/- {np.std(rewards):.2f}")
     print(f"Length: {np.mean(rewards):.2f} +/- {np.std(rewards):.2f}")
+    """
 
+exit(0)
 # plot learning curves
 import matplotlib.pyplot as plt
 

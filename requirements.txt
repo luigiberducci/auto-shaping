@@ -1,6 +1,11 @@
 gymnasium[classic-control]
 pygame
 opencv-python
-rtamt
+git+https://github.com/nickovic/rtamt.git@filtering
 lark
 pyyaml
+charset-normalizer==2.1.0
+
+# for benchmark
+wandb
+moviepy
