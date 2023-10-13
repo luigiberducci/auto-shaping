@@ -6,6 +6,8 @@ from stable_baselines3 import A2C
 from shaping.tltl_shaping import TLTLWrapper
 from shaping.utils.dictionary_wrapper import DictWrapper
 
+RENDER=False    # Set to True to render the environment after training
+
 env = gymnasium.make("CartPole-v1", render_mode="rgb_array")
 env = DictWrapper(env, variables=["x", "x_dot", "theta", "theta_dot"])
 
@@ -33,4 +35,6 @@ obs = vec_env.reset()
 for i in range(1000):
     action, _state = model.predict(obs, deterministic=True)
     obs, reward, done, info = vec_env.step(action)
-    vec_env.render("human")
+    if RENDER:
+        vec_env.render("human")
+
