@@ -1,4 +1,4 @@
-name: Run Unit Tests
+name: Run Examples
 
 on:
   pull_request:
@@ -21,11 +21,13 @@ jobs:
         python-version: '3.10'
         cache: 'pip'
 
-    - name: Install base dependencies
-      run: pip install -r requirements.txt
-
-    - name: Install extra dependencies
-      run: pip install -r examples/requirements.txt
+    - name: Install dependencies
+      run: |
+        pip install --upgrade pip
+        pip install -r requirements.txt
+        pip install -r examples/requirements.txt
 
     - name: Run script
-      run: PYTHONPATH=. python examples/example.py
+      run: |
+        PYTHONPATH=. python examples/train_custom_spec_sb3.py
+        PYTHONPATH=. python examples/train_file_spec_sb3.py

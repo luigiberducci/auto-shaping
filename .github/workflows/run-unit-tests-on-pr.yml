@@ -21,7 +21,9 @@ jobs:
         python-version: '3.10'
         cache: 'pip'
     - name: Install dependencies
-      run: pip install -r requirements.txt
+      run: |
+        pip install --upgrade pip
+        pip install -r requirements.txt
 
     - name: Run script
-      run: PYTHONPATH=. python examples/example.py
+      run: PYTHONPATH=. python -m unittest discover -s ./tests

@@ -10,7 +10,7 @@ env = shaping.wrap(env=env, reward="TLTL", spec="../configs/CartPole-v1.yaml")
 env = FlattenObservation(env)
 
 model = A2C("MlpPolicy", env, verbose=1)
-model.learn(total_timesteps=100_000)
+model.learn(total_timesteps=10_000)
 
 vec_env = model.get_env()
 obs = vec_env.reset()
