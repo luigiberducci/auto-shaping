@@ -31,8 +31,11 @@ class TestBHNR(unittest.TestCase):
         while not done:
             obs, reward, done, truncated, info = env.step(env.action_space.sample())
 
-            self.assertTrue(reward >= 0.0, f" negative reward of {reward}, expected >= 0.0")
-            self.assertTrue(reward <= 1.0, f" too large reward of {reward}, expected <= 1.0")
-            print(reward)
+            self.assertTrue(
+                reward >= 0.0, f" negative reward of {reward}, expected >= 0.0"
+            )
+            self.assertTrue(
+                reward <= 1.0, f" too large reward of {reward}, expected <= 1.0"
+            )
 
         env.close()

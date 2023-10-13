@@ -45,7 +45,6 @@ class TestTLTL(unittest.TestCase):
         env = gymnasium.make("CartPole-v1", render_mode="human")
         env = DictWrapper(env, variables=["x", "x_dot", "theta", "theta_dot"])
 
-
         specs = [
             'ensure "x" < 2.4',
             'ensure "x" > -2.4',

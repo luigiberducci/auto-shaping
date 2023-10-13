@@ -1,3 +1,4 @@
+import os
 import unittest
 
 import numpy as np
@@ -11,7 +12,8 @@ class TestRTAMTUtils(unittest.TestCase):
         import rtamt
         import pandas as pd
 
-        data1 = pd.read_csv("example1.csv", delimiter=",", header=0)
+        test_dir = os.path.dirname(os.path.abspath(__file__))
+        data1 = pd.read_csv(f"{test_dir}/example1.csv", delimiter=",", header=0)
 
         # from original example
         spec = rtamt.StlDiscreteTimeSpecification(semantics=rtamt.Semantics.STANDARD)
@@ -51,7 +53,8 @@ class TestRTAMTUtils(unittest.TestCase):
         import rtamt
         import pandas as pd
 
-        data1 = pd.read_csv("example1.csv", delimiter=",", header=0)
+        test_dir = os.path.dirname(os.path.abspath(__file__))
+        data1 = pd.read_csv(f"{test_dir}/example1.csv", delimiter=",", header=0)
 
         # from original example
         spec = rtamt.StlDiscreteTimeSpecification(semantics=rtamt.Semantics.STANDARD)

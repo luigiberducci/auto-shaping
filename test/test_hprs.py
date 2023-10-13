@@ -32,6 +32,5 @@ class TestHPRS(unittest.TestCase):
 
         while not done:
             obs, reward, done, truncated, info = env.step(env.action_space.sample())
-            print(reward)
 
         env.close()
