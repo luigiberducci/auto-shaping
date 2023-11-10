@@ -11,6 +11,23 @@ Variable = namedtuple("Variable", ["name", "fn", "min", "max", "description"], d
 Constant = namedtuple("Constant", ["name", "value", "description"], defaults=[None] * 3)
 
 
+def check_var(name, min, max, fn=None, description=None):
+    assert isinstance(name, str), f"Variable name must be a string, got {type(name)}"
+    assert isinstance(min, (int, float)), f"Variable min must be a number, got {type(min)}"
+    assert isinstance(max, (int, float)), f"Variable max must be a number, got {type(max)}"
+    assert min < max, f"Variable has min value greater than max value"
+    assert fn is None or isinstance(fn, str), f"Variable fn must be a expression as string or None, got {type(fn)}"
+    assert description is None or isinstance(description,
+                                             str), f"Variable description must be a string or None, got {type(description)}"
+
+
+def check_const(name, value, description=None):
+    assert isinstance(name, str), f"Constant name must be a string, got {type(name)}"
+    assert isinstance(value, (int, float)), f"Constant value must be a number, got {type(value)}"
+    assert description is None or isinstance(description,
+                                             str), f"Constant description must be a string or None, got {type(description)}"
+
+
 class RequirementSpec:
     grammar_path = pathlib.Path(__file__).parent.parent / "parser" / "grammar.txt"
     transformer = RewardShapingTransformer()
@@ -65,12 +82,12 @@ class RequirementSpec:
 
 class RewardSpec:
     def __init__(
-        self,
-        specs: List[str],
-        variables: List[Variable],
-        constants: List[
-            Union[Constant, tuple[str, float], tuple[str, float, str]]
-        ] = None,
+            self,
+            specs: List[str],
+            variables: List[Variable],
+            constants: List[
+                Union[Constant, tuple[str, float], tuple[str, float, str]]
+            ] = None,
     ):
         assert len(specs) > 0, "At least one specification must be provided"
         assert len(variables) > 0, "At least one variable must be provided"
@@ -78,11 +95,7 @@ class RewardSpec:
         self._variables = {}
         for var in variables:
             assert isinstance(var, Variable), f"Variable {var} must be a Variable. Got {type(var)}"
-            assert all([f for f in [var.name, var.min, var.max]]), f"Variable {var} must have name, min, max. Got {var}"
-            assert isinstance(var.name, str), f"Variable name must be a string, got {type(var.name)}"
-            assert isinstance(var.min, (int, float)), f"Variable min must be a number, got {type(var.min)}"
-            assert isinstance(var.max, (int, float)), f"Variable max must be a number, got {type(var.max)}"
-            assert var.min < var.max, f"Variable {var.name} has min value greater than max value"
+            check_var(var.name, var.min, var.max, var.fn, var.description)
 
             self._variables[var.name] = var
 
@@ -90,9 +103,7 @@ class RewardSpec:
         if constants is not None:
             for const in constants:
                 assert isinstance(const, Constant), f"Constant {const} must be a Constant. Got {type(const)}"
-                assert all([f for f in [const.name, const.value]]), f"Constant {const} must have name, value. Got {const}"
-                assert isinstance(const.name, str), f"Constant name must be a string, got {type(const.name)}"
-                assert isinstance(const.value, (int, float)), f"Constant value must be a number, got {type(const.value)}"
+                check_const(const.name, const.value, const.description)
 
                 self._constants[const.name] = const
                 RequirementSpec.transformer.add_constant(
@@ -128,13 +139,18 @@ class RewardSpec:
             assert all(
                 [k in var_dict for k in ["name", "min", "max"]]
             ), f"Variable {var_dict} must have keys 'name', 'min', and 'max'"
-            desc = var_dict.get("description", "")
+            desc = var_dict.get("description", None)
+            fn = var_dict.get("fn", None)
+
             var = Variable(
                 name=var_dict["name"],
                 min=var_dict["min"],
                 max=var_dict["max"],
+                fn=fn,
                 description=desc,
             )
+
+            check_var(var.name, var.min, var.max, var.fn, var.description)
             variables.append(var)
 
         constants = []
@@ -149,6 +165,8 @@ class RewardSpec:
                     value=const_dict["value"],
                     description=desc,
                 )
+
+                check_const(const.name, const.value, const.description)
                 constants.append(const)
 
         return RewardSpec(specs=specs, variables=variables, constants=constants)
