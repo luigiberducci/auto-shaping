@@ -2,6 +2,8 @@ from typing import Any, List, Dict
 import rtamt
 import numpy as np
 
+from shaping.spec.reward_spec import RewardSpec
+
 
 def monitor_stl_episode(
     stl_spec: str, vars: List[str], episode: Dict[str, Any], types: List[str] = None
@@ -74,3 +76,24 @@ def clip_and_norm(v: float, minv: float, maxv: float) -> float:
         v = maxv
 
     return (v - minv) / (maxv - minv)
+
+
+def extend_state(state: dict, spec: RewardSpec) -> dict:
+    """
+    Given a state and a reward specification, return an extended state with all the constants and variables.
+    """
+    context = {}
+    # first add the constants
+    for const_name, const in spec._constants.items():
+        value = const.value
+        if isinstance(value, str):
+            value = float(eval(value, {**context, "np": np}))
+        context[const_name] = value
+    # then add the variables from the state
+    context.update(state)
+    # finally compute derived variables
+    for var_name, var in spec._variables.items():
+        if var.fn is not None:
+            value = float(eval(var.fn, {**context, "np": np}))
+            context[var_name] = value
+    return context
