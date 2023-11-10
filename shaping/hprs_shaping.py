@@ -16,16 +16,18 @@ _cmp_lambdas = {
     "!=": lambda x, y: (x - y) > 1e-6,
 }
 
+fns = {
+    "abs": np.abs,
+    "exp": np.exp,
+    None: lambda x: x,
+}
+
 
 def eval_var(state, var, fn):
-    if fn == "abs":
-        val = np.abs(state[var])
-    elif fn == "exp":
-        val = np.exp(state[var])
-    elif fn is None:
-        val = state[var]
-    else:
-        raise NotImplementedError(f"Function {fn} not implemented")
+    try:
+        val = fns[fn](state[var])
+    except KeyError:
+        raise ValueError(f"Not able to evaluate {fn} on variable {var}. Fns: {fns.keys()}, Vars: {state.keys()}")
     return val
 
 
@@ -38,9 +40,7 @@ class SparseSuccessRewardWrapper(gymnasium.Wrapper):
         self,
         env: gymnasium.Env,
         specs: list[str],
-        variables: list[
-            Union[Variable, tuple[str, float, float], tuple[str, float, float, str]]
-        ],
+        variables: list[Variable],
         constants: list[
             Union[Constant, tuple[str, float], tuple[str, float, str]]
         ] = None,
@@ -80,8 +80,8 @@ class HPRSWrapper(SparseSuccessRewardWrapper):
         self,
         env: gymnasium.Env,
         specs: list[str],
-        variables: list[tuple[str, float, float]],
-        constants: list[tuple[str, float]] = None,
+        variables: list[Variable],
+        constants: list[Constant] = None,
         gamma: float = 0.99,
     ):
         gymnasium.utils.RecordConstructorArgs.__init__(

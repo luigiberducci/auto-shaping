@@ -3,7 +3,7 @@ import warnings
 import gymnasium
 
 from shaping.utils.collection_wrapper import CollectionWrapper
-from shaping.spec.reward_spec import RewardSpec
+from shaping.spec.reward_spec import RewardSpec, Variable
 from shaping.utils.utils import monitor_stl_episode, monitor_filtering_stl_episode
 
 
@@ -18,7 +18,7 @@ class BHNRWrapper(CollectionWrapper):
             self,
             env: gymnasium.Env,
             specs: list[str],
-            variables: list[tuple[str, float, float]],
+            variables: list[Variable],
             constants: list[tuple[str, float]] = None,
             window_len: int = 10,
     ):

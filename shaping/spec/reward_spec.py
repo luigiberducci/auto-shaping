@@ -7,8 +7,8 @@ from lark import Lark
 
 from shaping.parser.transformer import RewardShapingTransformer
 
-Variable = namedtuple("Variable", ["name", "min", "max", "description"], defaults=[""])
-Constant = namedtuple("Constant", ["name", "value", "description"], defaults=[""])
+Variable = namedtuple("Variable", ["name", "fn", "min", "max", "description"], defaults=[None] * 5)
+Constant = namedtuple("Constant", ["name", "value", "description"], defaults=[None] * 3)
 
 
 class RequirementSpec:
@@ -67,9 +67,7 @@ class RewardSpec:
     def __init__(
         self,
         specs: List[str],
-        variables: List[
-            Union[Variable, tuple[str, float, float], tuple[str, float, float, str]]
-        ],
+        variables: List[Variable],
         constants: List[
             Union[Constant, tuple[str, float], tuple[str, float, str]]
         ] = None,
@@ -79,42 +77,26 @@ class RewardSpec:
 
         self._variables = {}
         for var in variables:
-            if isinstance(var, Variable):
-                assert (
-                    var.min < var.max
-                ), f"Variable {var.name} has min value greater than max value"
-                variable_obj = var
-            elif isinstance(var, tuple):
-                assert len(var) in [
-                    3,
-                    4,
-                ], f"Variable {var[0]} must be a tuple of length 3 or 4"
-                assert (
-                    var[1] < var[2]
-                ), f"Variable {var[0]} has min value greater than max value"
-                variable_obj = Variable(*var)
-            else:
-                raise ValueError(
-                    f"Variable {var} must be a Variable or a tuple, got {type(var)}"
-                )
-            self._variables[var[0]] = variable_obj
+            assert isinstance(var, Variable), f"Variable {var} must be a Variable. Got {type(var)}"
+            assert all([f for f in [var.name, var.min, var.max]]), f"Variable {var} must have name, min, max. Got {var}"
+            assert isinstance(var.name, str), f"Variable name must be a string, got {type(var.name)}"
+            assert isinstance(var.min, (int, float)), f"Variable min must be a number, got {type(var.min)}"
+            assert isinstance(var.max, (int, float)), f"Variable max must be a number, got {type(var.max)}"
+            assert var.min < var.max, f"Variable {var.name} has min value greater than max value"
+
+            self._variables[var.name] = var
 
         self._constants = {}
         if constants is not None:
             for const in constants:
-                if isinstance(const, Constant):
-                    constant_obj = const
-                elif isinstance(const, tuple):
-                    assert len(const) in [
-                        2,
-                        3,
-                    ], f"Constant {const[0]} must be a tuple of length 2 or 3, (name, value, description)"
-                    constant_obj = Constant(*const)
-                else:
-                    raise ValueError(f"Constant {const} must be a Constant or a tuple")
-                self._constants[constant_obj.name] = constant_obj
+                assert isinstance(const, Constant), f"Constant {const} must be a Constant. Got {type(const)}"
+                assert all([f for f in [const.name, const.value]]), f"Constant {const} must have name, value. Got {const}"
+                assert isinstance(const.name, str), f"Constant name must be a string, got {type(const.name)}"
+                assert isinstance(const.value, (int, float)), f"Constant value must be a number, got {type(const.value)}"
+
+                self._constants[const.name] = const
                 RequirementSpec.transformer.add_constant(
-                    name=constant_obj.name, value=constant_obj.value
+                    name=const.name, value=const.value
                 )
 
         # important to do this after constants are set

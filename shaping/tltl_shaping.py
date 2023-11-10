@@ -3,7 +3,7 @@ import warnings
 import gymnasium
 
 from shaping.utils.collection_wrapper import CollectionWrapper
-from shaping.spec.reward_spec import RewardSpec
+from shaping.spec.reward_spec import RewardSpec, Variable, Constant
 from shaping.utils.utils import monitor_stl_episode
 
 
@@ -18,8 +18,8 @@ class TLTLWrapper(CollectionWrapper):
         self,
         env: gymnasium.Env,
         specs: list[str],
-        variables: list[tuple[str, float, float]],
-        constants: list[tuple[str, float]] = None,
+        variables: list[Variable],
+        constants: list[Constant] = None,
     ):
         var_names = [var[0] for var in variables]
         super().__init__(env, variables=var_names)

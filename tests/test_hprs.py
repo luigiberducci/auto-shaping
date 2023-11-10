@@ -3,6 +3,7 @@ import unittest
 import numpy as np
 
 from shaping.hprs_shaping import HPRSWrapper
+from shaping.spec.reward_spec import Variable
 
 
 class TestHPRS(unittest.TestCase):
@@ -19,10 +20,10 @@ class TestHPRS(unittest.TestCase):
             'encourage abs "theta" <= 0.0',
         ]
         variables = [
-            ("x", -2.4, 2.4),
-            ("x_dot", -3.0, 3.0),
-            ("theta", -0.2, 0.2),
-            ("theta_dot", -3.0, 3.0),
+            Variable(name="x", min=-2.4, max=2.4),
+            Variable(name="x_dot", min=-3.0, max=3.0),
+            Variable(name="theta", min=-0.2, max=0.2),
+            Variable(name="theta_dot", min=-3.0, max=3.0),
         ]
 
         env = HPRSWrapper(env, specs=specs, variables=variables)

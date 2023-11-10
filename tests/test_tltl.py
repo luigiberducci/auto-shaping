@@ -1,5 +1,6 @@
 import unittest
 
+from shaping.spec.reward_spec import Variable
 from shaping.tltl_shaping import TLTLWrapper
 from shaping.utils.dictionary_wrapper import DictWrapper
 
@@ -16,10 +17,10 @@ class TestTLTL(unittest.TestCase):
             'ensure "x" > -2.4',
         ]
         variables = [
-            ("x", -2.4, 2.4),
-            ("x_dot", -3.0, 3.0),
-            ("theta", -0.2, 0.2),
-            ("theta_dot", -3.0, 3.0),
+            Variable(name="x", min=-2.4, max=2.4),
+            Variable(name="x_dot", min=-3.0, max=3.0),
+            Variable(name="theta", min=-0.2, max=0.2),
+            Variable(name="theta_dot", min=-3.0, max=3.0),
         ]
 
         env = TLTLWrapper(env, specs=specs, variables=variables)
@@ -52,10 +53,10 @@ class TestTLTL(unittest.TestCase):
             'ensure "theta" > -0.2',
         ]
         variables = [
-            ("x", -2.4, 2.4),
-            ("x_dot", -3.0, 3.0),
-            ("theta", -0.2, 0.2),
-            ("theta_dot", -3.0, 3.0),
+            Variable(name="x", min=-2.4, max=2.4),
+            Variable(name="x_dot", min=-3.0, max=3.0),
+            Variable(name="theta", min=-0.2, max=0.2),
+            Variable(name="theta_dot", min=-3.0, max=3.0),
         ]
 
         env = TLTLWrapper(env, specs=specs, variables=variables)

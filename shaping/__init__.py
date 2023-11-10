@@ -5,7 +5,7 @@ from typing import Union
 import gymnasium
 
 from shaping.bhnr_shaping import BHNRWrapper
-from shaping.spec.reward_spec import RewardSpec
+from shaping.spec.reward_spec import RewardSpec, Variable, Constant
 from shaping.tltl_shaping import TLTLWrapper
 from shaping.hprs_shaping import HPRSWrapper
 
@@ -68,17 +68,11 @@ def wrap(
         variables = list(spec.variables.keys())
         env = DictWrapper(env, variables=variables)
 
-    var_tuples = [
-        (var.name, var.min, var.max) for var_name, var in spec.variables.items()
-    ]
-    const_tuples = [
-        (const.name, const.value) for const_name, const in spec.constants.items()
-    ]
     specs_str = [str(sp) for sp in spec.specs]
 
     if reward == "default":
         return env
 
     return __entry_points__[reward](
-        env, specs=specs_str, variables=var_tuples, constants=const_tuples
+        env, specs=specs_str, variables=list(spec.variables.values()), constants=list(spec.constants.values())
     )

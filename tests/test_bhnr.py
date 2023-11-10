@@ -1,6 +1,7 @@
 import unittest
 
 from shaping.bhnr_shaping import BHNRWrapper
+from shaping.spec.reward_spec import Variable
 
 
 class TestBHNR(unittest.TestCase):
@@ -13,14 +14,14 @@ class TestBHNR(unittest.TestCase):
 
         specs = [
             'ensure abs "x" <= 2.4',
-            #'achieve abs "x" <= 0.05',
-            #'encourage abs "theta" <= 0.0',
+            'achieve abs "x" <= 0.05',
+            'encourage abs "theta" <= 0.0',
         ]
         variables = [
-            ("x", -2.4, 2.4),
-            ("x_dot", -3.0, 3.0),
-            ("theta", -0.2, 0.2),
-            ("theta_dot", -3.0, 3.0),
+            Variable(name="x", min=-2.4, max=2.4),
+            Variable(name="x_dot", min=-3.0, max=3.0),
+            Variable(name="theta", min=-0.2, max=0.2),
+            Variable(name="theta_dot", min=-3.0, max=3.0),
         ]
 
         env = BHNRWrapper(env, specs=specs, variables=variables)
