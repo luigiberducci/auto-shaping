@@ -1,5 +1,5 @@
 """
-Benchmark various reward shaping methods on the CartPole-v1 environment using Stable Baselines 3.
+Benchmark various reward shaping methods on the Pendulum-v1 environment using Stable Baselines 3.
 
 For each shaping method, we train a PPO agent for 50k timesteps and evaluate it every 1k timesteps.
 The evaluation is done on the same (default) evaluation environment, so the evaluation metric is
@@ -16,7 +16,6 @@ from gymnasium.wrappers import FlattenObservation
 
 from stable_baselines3 import PPO
 from stable_baselines3.common.callbacks import EvalCallback
-from stable_baselines3.common.evaluation import evaluate_policy
 from stable_baselines3.common.utils import set_random_seed
 
 import wandb
@@ -37,7 +36,7 @@ config = {
     },
     "training": {
         "reward": None,  # set in loop
-        "total_timesteps": 50000,
+        "total_timesteps": 100_000,
     },
     "outdir": "exp",
     "seed": 42,
@@ -52,7 +51,7 @@ eval_env = FlattenObservation(eval_env)
 # train
 results = {}
 group_id = f"group-{int(time.time())}"
-for reward in ["default", "TLTL", "BHNR", "HPRS"]:
+for reward in ["default", "HPRS", "TLTL", "BHNR"]:
     print(f"Training with {reward} reward shaping")
 
     # set up config

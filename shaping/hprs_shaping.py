@@ -5,7 +5,7 @@ import numpy as np
 
 from shaping import RewardSpec
 from shaping.spec.reward_spec import Variable, Constant
-from shaping.utils.utils import clip_and_norm
+from shaping.utils.utils import clip_and_norm, extend_state
 
 _cmp_lambdas = {
     "<": lambda x, y: x < y,
@@ -16,17 +16,13 @@ _cmp_lambdas = {
     "!=": lambda x, y: (x - y) > 1e-6,
 }
 
+fns = {
+    "abs": np.abs,
+    "exp": np.exp,
+    None: lambda x: x,
+}
 
-def eval_var(state, var, fn):
-    if fn == "abs":
-        val = np.abs(state[var])
-    elif fn == "exp":
-        val = np.exp(state[var])
-    elif fn is None:
-        val = state[var]
-    else:
-        raise NotImplementedError(f"Function {fn} not implemented")
-    return val
+
 
 
 class SparseSuccessRewardWrapper(gymnasium.Wrapper):
@@ -38,9 +34,7 @@ class SparseSuccessRewardWrapper(gymnasium.Wrapper):
         self,
         env: gymnasium.Env,
         specs: list[str],
-        variables: list[
-            Union[Variable, tuple[str, float, float], tuple[str, float, float, str]]
-        ],
+        variables: list[Variable],
         constants: list[
             Union[Constant, tuple[str, float], tuple[str, float, str]]
         ] = None,
@@ -54,6 +48,7 @@ class SparseSuccessRewardWrapper(gymnasium.Wrapper):
             if spec._operator in ["achieve", "conquer"]
         ]
         self._variables = self._spec.variables
+        self._constants = self._spec.constants
 
         assert (
             type(env.observation_space) == gymnasium.spaces.Dict
@@ -61,17 +56,20 @@ class SparseSuccessRewardWrapper(gymnasium.Wrapper):
 
     def _reward(self, state, action, next_state, done, info):
         reward = 0.0
+
         for target_spec in self._target_specs:
-            (fn, var), aritm_op, threshold = target_spec._predicate
+            (fn, var_name), aritm_op, threshold = target_spec._predicate
             cmp_lambda = _cmp_lambdas[aritm_op]
-            val = eval_var(next_state, var, fn)
+
+            val = fns[fn](next_state[var_name])
 
             reward += float(cmp_lambda(val, threshold))
         return reward
 
     def step(self, action):
         next_obs, _, done, truncated, info = super().step(action)
-        reward = self._reward(None, action, next_obs, done, info)
+        extended_state = extend_state(next_obs, self._spec)
+        reward = self._reward(None, action, extended_state, done, info)
         return next_obs, reward, done, truncated, info
 
 
@@ -80,8 +78,8 @@ class HPRSWrapper(SparseSuccessRewardWrapper):
         self,
         env: gymnasium.Env,
         specs: list[str],
-        variables: list[tuple[str, float, float]],
-        constants: list[tuple[str, float]] = None,
+        variables: list[Variable],
+        constants: list[Constant] = None,
         gamma: float = 0.99,
     ):
         gymnasium.utils.RecordConstructorArgs.__init__(
@@ -116,7 +114,10 @@ class HPRSWrapper(SparseSuccessRewardWrapper):
 
     def step(self, action):
         next_obs, _, done, truncated, info = super().step(action)
-        reward = self._hprs_reward(self._obs, action, next_obs, done, info)
+        ext_state = extend_state(self._obs, self._spec)
+        ext_next_state = extend_state(next_obs, self._spec)
+        reward = self._hprs_reward(ext_state, action, ext_next_state, done, info)
+        self._obs = next_obs
         return next_obs, reward, done, truncated, info
 
     def _hprs_reward(self, state, action, next_state, done, info):
@@ -145,7 +146,7 @@ class HPRSWrapper(SparseSuccessRewardWrapper):
         for spec in self._safety_specs:
             (fn, var), aritm_op, threshold = spec._predicate
             cmp_lambda = _cmp_lambdas[aritm_op]
-            val = eval_var(state, var, fn)
+            val = fns[fn](state[var])
 
             reward += float(cmp_lambda(val, threshold))
 
@@ -158,13 +159,13 @@ class HPRSWrapper(SparseSuccessRewardWrapper):
         for spec in self._safety_specs:
             (fn, var), aritm_op, threshold = spec._predicate
             cmp_lambda = _cmp_lambdas[aritm_op]
-            val = eval_var(state, var, fn)
+            val = fns[fn](state[var])
 
             safety_weight *= float(cmp_lambda(val, threshold))
 
         for spec in self._target_spec:
             (fn, var), aritm_op, threshold = spec._predicate
-            val = eval_var(state, var, fn)
+            val = fns[fn](state[var])
 
             minv = self._variables[var].min
             maxv = self._variables[var].max
@@ -185,14 +186,14 @@ class HPRSWrapper(SparseSuccessRewardWrapper):
         for spec in self._safety_specs:
             (fn, var), aritm_op, threshold = spec._predicate
             cmp_lambda = _cmp_lambdas[aritm_op]
-            val = eval_var(state, var, fn)
+            val = fns[fn](state[var])
 
             safety_weight *= float(cmp_lambda(val, threshold))
 
         target_weight = 1.0
         for spec in self._target_spec:
             (fn, var), aritm_op, threshold = spec._predicate
-            val = eval_var(state, var, fn)
+            val = fns[fn](state[var])
 
             minv = self._variables[var].min
             maxv = self._variables[var].max
@@ -206,7 +207,7 @@ class HPRSWrapper(SparseSuccessRewardWrapper):
 
         for spec in self._comfort_specs:
             (fn, var), aritm_op, threshold = spec._predicate
-            val = eval_var(state, var, fn)
+            val = fns[fn](state[var])
 
             minv = self._variables[var].min
             maxv = self._variables[var].max

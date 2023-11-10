@@ -47,15 +47,25 @@ class CollectionWrapper(gymnasium.Wrapper, gymnasium.utils.RecordConstructorArgs
             self._episode["time"] = deque(maxlen=self._window_len)
             self._time = 0.0
 
+        # collect observable variables from the state
+        obs = self._extractor_fn(state) if self._extractor_fn else state
+        for key, value in obs.items():
+            self._episode[key].append(value)
+
+        if not self._flag_time:
+            self._time += 1.0
+            self._episode["time"].append(self._time)
+
         return state, info
 
     def step(self, action):
         if self._episode is None:
             raise RuntimeError("reset() must be called before step()")
 
-        obs, reward, done, truncated, info = super().step(action)
+        state, reward, done, truncated, info = super().step(action)
 
         # collect observable variables from the state
+        obs = self._extractor_fn(state) if self._extractor_fn else state
         for key, value in obs.items():
             self._episode[key].append(value)
 

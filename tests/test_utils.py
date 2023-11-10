@@ -92,7 +92,7 @@ class TestWrappers(unittest.TestCase):
     def test_dict_wrapper(self):
         import gymnasium
 
-        env = gymnasium.make("CartPole-v1", render_mode="human")
+        env = gymnasium.make("CartPole-v1", render_mode=None)
         env = DictWrapper(env, variables=["x", "x_dot", "theta", "theta_dot"])
 
         self.assertTrue(

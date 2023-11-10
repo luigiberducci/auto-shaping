@@ -1,4 +1,3 @@
-import numpy as np
 from lark import Transformer
 
 
@@ -61,4 +60,9 @@ class RewardShapingTransformer(Transformer):
         if not var in self.assignments:
             raise ValueError(f"Variable {var} not defined")
 
-        return float(self.assignments[var])
+        if isinstance(self.assignments[var], str):
+            assert False
+            evaluated = eval(self.assignments[var], self.assignments)
+        else:
+            evaluated = self.assignments[var]
+        return float(evaluated)

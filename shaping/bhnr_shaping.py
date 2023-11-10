@@ -3,8 +3,8 @@ import warnings
 import gymnasium
 
 from shaping.utils.collection_wrapper import CollectionWrapper
-from shaping.spec.reward_spec import RewardSpec
-from shaping.utils.utils import monitor_stl_episode, monitor_filtering_stl_episode
+from shaping.spec.reward_spec import RewardSpec, Variable, Constant
+from shaping.utils.utils import monitor_stl_episode, monitor_filtering_stl_episode, extend_state
 
 
 class BHNRWrapper(CollectionWrapper):
@@ -18,8 +18,8 @@ class BHNRWrapper(CollectionWrapper):
             self,
             env: gymnasium.Env,
             specs: list[str],
-            variables: list[tuple[str, float, float]],
-            constants: list[tuple[str, float]] = None,
+            variables: list[Variable],
+            constants: list[Constant] = None,
             window_len: int = 10,
     ):
         var_names = [var[0] for var in variables]
@@ -37,10 +37,11 @@ class BHNRWrapper(CollectionWrapper):
                     f"Failed to parse requirement: {req_spec}, make sure it is a valid STL formula"
                 )
         self._stl_spec = " and ".join(reqs)
-        self._variables = list(self._spec.variables.keys())
+        self._variables = [var for var in self._spec.variables] + [var for var in self._spec.constants]
 
+        extractor_fn = lambda state: extend_state(state, self._spec)
         super(BHNRWrapper, self).__init__(
-            env, self._variables,
+            env, extractor_fn=extractor_fn, variables=self._variables,
             window_len=window_len,
         )
 
