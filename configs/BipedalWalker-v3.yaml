@@ -1,0 +1,66 @@
+specs:
+  - 'ensure "min_lidar" >= 0.0'
+  - 'achieve "x" >= "x_goal"'
+  - 'encourage abs "hull_angle" <= "hull_angle_limit"'
+  - 'encourage abs "horizontal_speed" >= "horizontal_speed_target"'
+  - 'encourage abs "vertical_speed" <= "vertical_speed_limit"'
+  - 'encourage abs "angular_velocity" <= "angular_velocity_limit"'
+
+constants:
+  - name: "x_goal"
+    value: 0.0
+    description: "goal position"
+  - name: "hull_angle_limit"
+    value: 0.2
+    description: "hull angle limit which terminates the episode"
+  - name: "horizontal_speed_target"
+    value: 0.5
+    description: "target horizontal speed"
+  - name: "vertical_speed_limit"
+    value: 0.5
+    description: "vertical speed limit which terminates the episode"
+
+
+variables:
+  - name: "hull_angle_speed"
+    min: -3.14
+    max: 3.14
+    description: ""
+  - name: "angular_velocity"
+    min: -5.0
+    max: 5.0
+    description: ""
+  - name: "horizontal_speed"
+    min: -5.0
+    max: 5.0
+    description: ""
+  - name: "vertical_speed"
+    min: -5.0
+    max: 5.0
+    description: ""
+  - name: "joints_pos"
+    min: -3.14
+    max: 3.14
+    description: ""
+  - name: "joints_ang_speed"
+    min: -3.14
+    max: 3.14
+    description: ""
+  - name: "legs_contact"
+    min: -3.14
+    max: 3.14
+    description: ""
+  - name: "lidar"
+    min: -3.14
+    max: 3.14
+    description: ""
+  # aux variables
+  - name: "min_lidar"
+    fn: "np.min(lidar)"
+    min: -3.14
+    max: 3.14
+    description: ""
+
+# TODO: how can we define collection of variables for better readibility? eg. lidar = [lidar1, lidar2, lidar3, ...]
+# TODO: how can we use variables from simulator (e.g., x) which are not in the observation space?
+
