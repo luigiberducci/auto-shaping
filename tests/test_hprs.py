@@ -7,7 +7,8 @@ from shaping.spec.reward_spec import Variable
 
 
 class TestHPRS(unittest.TestCase):
-    def test_cartpole_x(self):
+
+    def _make_hprs_cartpole_env(self):
         import gymnasium
         from shaping.utils.dictionary_wrapper import DictWrapper
 
@@ -27,6 +28,26 @@ class TestHPRS(unittest.TestCase):
         ]
 
         env = HPRSWrapper(env, specs=specs, variables=variables)
+        return env
+
+    def test_wrapper_obs(self):
+        """
+        Test if the wrapper correctly store the last observation to compute the potential rewards.
+        """
+        env = self._make_hprs_cartpole_env()
+
+        obs, info = env.reset()
+        done = False
+
+        while not done:
+            self.assertEqual(obs, env._obs)
+            obs, reward, done, truncated, info = env.step(env.action_space.sample())
+
+        env.close()
+
+    def test_cartpole_x(self):
+
+        env = self._make_hprs_cartpole_env()
 
         obs, info = env.reset()
         done = False

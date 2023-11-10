@@ -1,16 +1,16 @@
 specs:
-  - 'ensure abs "x"<= "x_limit"'
+  - 'ensure abs "x" <= "x_limit"'
   - 'ensure abs "theta" <= "theta_limit"'
-  - 'conquer abs "x" <= "x_center"'
+  - 'conquer abs "x" <= "x_tol"'
   - 'encourage abs "theta" <= "theta_balance"'
 
 constants:
   - name: x_limit
     value: 2.4
     description: "world limit"
-  - name: x_center
+  - name: x_tol
     value: 0.25
-    description: "x +- x_center delimits the center of the world"
+    description: "tolerance for reaching the goal"
   - name: theta_limit
     value: 0.2095
     description: "pole angle limit which terminates the episode"
