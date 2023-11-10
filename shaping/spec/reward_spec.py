@@ -23,7 +23,7 @@ def check_var(name, min, max, fn=None, description=None):
 
 def check_const(name, value, description=None):
     assert isinstance(name, str), f"Constant name must be a string, got {type(name)}"
-    assert isinstance(value, (int, float)), f"Constant value must be a number, got {type(value)}"
+    assert isinstance(value, (int, float, str)), f"Constant value must be a number, got {type(value)}"
     assert description is None or isinstance(description,
                                              str), f"Constant description must be a string or None, got {type(description)}"
 
@@ -85,9 +85,7 @@ class RewardSpec:
             self,
             specs: List[str],
             variables: List[Variable],
-            constants: List[
-                Union[Constant, tuple[str, float], tuple[str, float, str]]
-            ] = None,
+            constants: List[Constant] = None,
     ):
         assert len(specs) > 0, "At least one specification must be provided"
         assert len(variables) > 0, "At least one variable must be provided"

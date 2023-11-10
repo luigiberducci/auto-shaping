@@ -65,7 +65,8 @@ def wrap(
     if not isinstance(env.observation_space, gymnasium.spaces.Dict):
         from shaping.utils.dictionary_wrapper import DictWrapper
 
-        variables = list(spec.variables.keys())
+        # extract atomic variables from spec that are not computed
+        variables = list([k for k, var in spec.variables.items() if var.fn is None])
         env = DictWrapper(env, variables=variables)
 
     specs_str = [str(sp) for sp in spec.specs]
