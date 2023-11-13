@@ -35,7 +35,7 @@ class TLTLWrapper(CollectionWrapper):
         self._stl_spec = " and ".join(reqs)
         self._variables = [var for var in self._spec.variables] + [var for var in self._spec.constants]
 
-        extractor_fn = lambda state: extend_state(state, self._spec)
+        extractor_fn = lambda state: extend_state(env=env, state=state, spec=self._spec)
         super(TLTLWrapper, self).__init__(
             env, extractor_fn=extractor_fn, variables=self._variables,
         )

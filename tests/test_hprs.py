@@ -4,6 +4,7 @@ import gymnasium
 import numpy as np
 
 from shaping.hprs_shaping import HPRSWrapper
+from shaping.utils.utils import extend_state
 from tests.utility_functions import get_cartpole_example1_spec, get_cartpole_example2_spec, \
     get_cartpole_spec_within_xlim
 
@@ -22,7 +23,8 @@ class TestHPRS(unittest.TestCase):
         done = False
 
         while not done:
-            self.assertTrue(np.allclose(obs, env._obs))
+            ext_obs = extend_state(env=env, state=obs, spec=env._spec)
+            self.assertTrue(ext_obs == env._obs)
             obs, reward, done, truncated, info = env.step(env.action_space.sample())
 
         env.close()

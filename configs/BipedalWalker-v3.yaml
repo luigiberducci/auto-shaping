@@ -1,66 +1,69 @@
 specs:
-  - 'ensure "min_lidar" >= 0.0'
-  - 'achieve "x" >= "x_goal"'
+  - 'achieve "x_remaining" <= "x_goal_tolerance"'
+  - 'ensure "min_lidar" >= "dist_hull_limit"'
   - 'encourage abs "hull_angle" <= "hull_angle_limit"'
   - 'encourage abs "horizontal_speed" >= "horizontal_speed_target"'
   - 'encourage abs "vertical_speed" <= "vertical_speed_limit"'
   - 'encourage abs "angular_velocity" <= "angular_velocity_limit"'
 
 constants:
+  # from bipedal_walker constants
+  - name: "SCALE"
+    value: 30.0
+  - name: "TERRAIN_LENGTH"
+    value: 200
+  - name: "TERRAIN_GRASS"
+    value: 10
+  - name: "TERRAIN_STEP"
+    value: "14 / 30.0"
   - name: "x_goal"
-    value: 0.0
-    description: "goal position"
+    value: "(TERRAIN_LENGTH - TERRAIN_GRASS) * TERRAIN_STEP"
+  - name: "x_goal_tolerance"
+    value: 0.05
+  #
+  - name: "dist_hull_limit"
+    value: 0.225
   - name: "hull_angle_limit"
-    value: 0.2
+    value: 0.08726
     description: "hull angle limit which terminates the episode"
   - name: "horizontal_speed_target"
-    value: 0.5
+    value: 0.30
     description: "target horizontal speed"
   - name: "vertical_speed_limit"
-    value: 0.5
+    value: 0.1
+    description: "vertical speed limit which terminates the episode"
+  - name: "angular_velocity_limit"
+    value: 0.25
     description: "vertical speed limit which terminates the episode"
 
 
 variables:
-  - name: "hull_angle_speed"
+  - name: "x_remaining"
+    fn: "(x_goal - env.hull.position[0]) / x_goal"
+    min: 0.0
+    max: 1.0
+    description: "normalized x position of the hull"
+  - name: "hull_angle"
+    fn: "state[0]"
     min: -3.14
     max: 3.14
-    description: ""
   - name: "angular_velocity"
+    fn: "state[1]"
     min: -5.0
     max: 5.0
     description: ""
   - name: "horizontal_speed"
+    fn: "state[2]"
     min: -5.0
     max: 5.0
     description: ""
   - name: "vertical_speed"
+    fn: "state[3]"
     min: -5.0
     max: 5.0
     description: ""
-  - name: "joints_pos"
-    min: -3.14
-    max: 3.14
-    description: ""
-  - name: "joints_ang_speed"
-    min: -3.14
-    max: 3.14
-    description: ""
-  - name: "legs_contact"
-    min: -3.14
-    max: 3.14
-    description: ""
-  - name: "lidar"
-    min: -3.14
-    max: 3.14
-    description: ""
-  # aux variables
   - name: "min_lidar"
-    fn: "np.min(lidar)"
-    min: -3.14
-    max: 3.14
-    description: ""
-
-# TODO: how can we define collection of variables for better readibility? eg. lidar = [lidar1, lidar2, lidar3, ...]
-# TODO: how can we use variables from simulator (e.g., x) which are not in the observation space?
-
+    fn: "np.min(state[-10:])"
+    min: -1.0
+    max: 1.0
+    description: "min normalized reading from lidar sensor"
