@@ -61,7 +61,7 @@ class TestHPRS(unittest.TestCase):
         """
         Test hprs in more complex spec for cartpole env.
         """
-        env = gymnasium.make("CartPole-v1", render_mode="human")
+        env = gymnasium.make("CartPole-v1", render_mode=None)
         specs, constants, variables = get_cartpole_example2_spec()
         env = HPRSWrapper(env, specs=specs, constants=constants, variables=variables)
 
