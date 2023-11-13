@@ -90,10 +90,9 @@ def extend_state(state: dict, spec: RewardSpec) -> dict:
             value = float(eval(value, {**context, "np": np}))
         context[const_name] = value
     # then add the variables from the state
-    context.update(state)
+    context.update({"state": state})
     # finally compute derived variables
     for var_name, var in spec._variables.items():
-        if var.fn is not None:
-            value = float(eval(var.fn, {**context, "np": np}))
-            context[var_name] = value
+        value = float(eval(var.fn, {**context, "np": np}))
+        context[var_name] = value
     return context

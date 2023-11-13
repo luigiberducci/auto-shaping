@@ -13,14 +13,14 @@ class TestRewardSpec(unittest.TestCase):
         with self.assertRaises(ValueError):
             spec = RewardSpec(
                 specs=['ensure "x" < "x_limit"'],
-                variables=[Variable(name="x", min=-2.4, max=2.4)],
+                variables=[Variable(name="x", fn="state[0]", min=-2.4, max=2.4)],
                 constants=None,
             )
 
         # test with constant defined
         spec = RewardSpec(
             specs=['ensure "x" < "x_limit"'],
-            variables=[Variable(name="x", min=-2.4, max=2.4)],
+            variables=[Variable(name="x", fn="state[0]", min=-2.4, max=2.4)],
             constants=[Constant(name="x_limit", value=2.4)],
         )
 
@@ -29,7 +29,7 @@ class TestRewardSpec(unittest.TestCase):
         # test with constant defined
         spec = RewardSpec(
             specs=['ensure "x" > -"x_limit"'],
-            variables=[Variable(name="x", min=-2.4, max=2.4)],
+            variables=[Variable(name="x", fn="state[0]", min=-2.4, max=2.4)],
             constants=[Constant(name="x_limit", value=2.4)],
         )
 

@@ -4,7 +4,6 @@ import unittest
 import numpy as np
 
 from shaping.utils import monitor_stl_episode
-from shaping.utils.dictionary_wrapper import DictWrapper
 
 
 class TestRTAMTUtils(unittest.TestCase):
@@ -91,6 +90,7 @@ class TestRTAMTUtils(unittest.TestCase):
 class TestWrappers(unittest.TestCase):
     def test_dict_wrapper(self):
         import gymnasium
+        from shaping.utils.dictionary_wrapper import DictWrapper
 
         env = gymnasium.make("CartPole-v1", render_mode=None)
         env = DictWrapper(env, variables=["x", "x_dot", "theta", "theta_dot"])

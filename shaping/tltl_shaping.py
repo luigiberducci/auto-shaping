@@ -23,7 +23,6 @@ class TLTLWrapper(CollectionWrapper):
     ):
         self._spec = RewardSpec(specs=specs, variables=variables, constants=constants,)
 
-
         reqs = []
         for req_spec in self._spec.specs:
             try:

@@ -1,28 +1,16 @@
 import unittest
 
-from shaping.spec.reward_spec import Variable, Constant
 from shaping.tltl_shaping import TLTLWrapper
-from shaping.utils.dictionary_wrapper import DictWrapper
+from tests.utility_functions import get_cartpole_spec_within_xlim, get_cartpole_example1_spec, \
+    get_cartpole_spec_within_xlim_and_balance, get_cartpole_example2_spec
 
 
 class TestTLTL(unittest.TestCase):
-    def test_cartpole_x(self):
+    def test_cartpole_within_xlim(self):
         import gymnasium
 
         env = gymnasium.make("CartPole-v1", render_mode=None)
-        env = DictWrapper(env, variables=["x", "x_dot", "theta", "theta_dot"])
-
-        specs = [
-            'ensure "x" < 2.4',
-            'ensure "x" > -2.4',
-        ]
-        variables = [
-            Variable(name="x", min=-2.4, max=2.4),
-            Variable(name="x_dot", min=-3.0, max=3.0),
-            Variable(name="theta", min=-0.2, max=0.2),
-            Variable(name="theta_dot", min=-3.0, max=3.0),
-        ]
-
+        specs, constants, variables = get_cartpole_spec_within_xlim()
         env = TLTLWrapper(env, specs=specs, variables=variables)
 
         obs, info = env.reset()
@@ -44,21 +32,7 @@ class TestTLTL(unittest.TestCase):
         import gymnasium
 
         env = gymnasium.make("CartPole-v1", render_mode=None)
-        env = DictWrapper(env, variables=["x", "x_dot", "theta", "theta_dot"])
-
-        specs = [
-            'ensure "x" < 2.4',
-            'ensure "x" > -2.4',
-            'ensure "theta" < 0.2',
-            'ensure "theta" > -0.2',
-        ]
-        variables = [
-            Variable(name="x", min=-2.4, max=2.4),
-            Variable(name="x_dot", min=-3.0, max=3.0),
-            Variable(name="theta", min=-0.2, max=0.2),
-            Variable(name="theta_dot", min=-3.0, max=3.0),
-        ]
-
+        specs, constants, variables = get_cartpole_spec_within_xlim_and_balance()
         env = TLTLWrapper(env, specs=specs, variables=variables)
 
         obs, info = env.reset()
@@ -78,29 +52,7 @@ class TestTLTL(unittest.TestCase):
         import gymnasium
 
         env = gymnasium.make("CartPole-v1", render_mode=None)
-        env = DictWrapper(env, variables=["x", "x_dot", "theta", "theta_dot"])
-
-        specs = [
-            'ensure "dist" < 2.4',
-            'ensure "x" > -2.4',
-            'ensure "theta" < 0.2',
-            'ensure "theta" > -0.2',
-        ]
-        constants = [
-            Constant(name="x_goal", value=0.0),
-            Constant(name="axle_y", value=100.0),
-            Constant(name="pole_length", value=1.0),
-            Constant(name="y_goal", value="axle_y + pole_length"),
-        ]
-        variables = [
-            Variable(name="x", min=-2.4, max=2.4),
-            Variable(name="y", min=0.0, max=110.0, fn="axle_y + pole_length*np.cos(theta)"),
-            Variable(name="dist", min=0.0, max=2.4, fn="np.sqrt((x-x_goal)**2 + (y-y_goal)**2)"),
-            Variable(name="x_dot", min=-3.0, max=3.0),
-            Variable(name="theta", min=-0.2, max=0.2),
-            Variable(name="theta_dot", min=-3.0, max=3.0),
-        ]
-
+        specs, constants, variables = get_cartpole_example2_spec()
         env = TLTLWrapper(env, specs=specs, variables=variables, constants=constants)
 
         obs, info = env.reset()

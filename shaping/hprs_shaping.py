@@ -50,10 +50,6 @@ class SparseSuccessRewardWrapper(gymnasium.Wrapper):
         self._variables = self._spec.variables
         self._constants = self._spec.constants
 
-        assert (
-            type(env.observation_space) == gymnasium.spaces.Dict
-        ), "Observation space must be a dictionary, use DictWrapper"
-
     def _reward(self, state, action, next_state, done, info):
         reward = 0.0
 

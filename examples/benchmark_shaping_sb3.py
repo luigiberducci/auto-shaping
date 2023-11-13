@@ -1,5 +1,5 @@
 """
-Benchmark various reward shaping methods on the Pendulum-v1 environment using Stable Baselines 3.
+Benchmark various reward shaping methods on the Cartpole-v1 environment using Stable Baselines 3.
 
 For each shaping method, we train a PPO agent for 50k timesteps and evaluate it every 1k timesteps.
 The evaluation is done on the same (default) evaluation environment, so the evaluation metric is
@@ -12,6 +12,7 @@ import os
 import time
 import logging
 
+import numpy as np
 from gymnasium.wrappers import FlattenObservation
 
 from stable_baselines3 import PPO
@@ -51,6 +52,7 @@ eval_env = FlattenObservation(eval_env)
 # train
 results = {}
 group_id = f"group-{int(time.time())}"
+group_logdir = f"{config['outdir']}/{group_id}"
 for reward in ["default", "HPRS", "TLTL", "BHNR"]:
     print(f"Training with {reward} reward shaping")
 
@@ -81,7 +83,7 @@ for reward in ["default", "HPRS", "TLTL", "BHNR"]:
     train_env = FlattenObservation(train_env)
 
     # train model and save results to logdir
-    logdir = f"{cfg['outdir']}/group-{group_id}/PPO-{cfg['env_id']}-{reward}"
+    logdir = f"{group_logdir}/PPO-{cfg['env_id']}-{reward}"
     eval_callback = EvalCallback(eval_env, log_path=logdir, eval_freq=eval_cfg["frequency"])
     wand_callback = WandbCallback(
         model_save_path=f"{logdir}/models",
@@ -96,28 +98,18 @@ for reward in ["default", "HPRS", "TLTL", "BHNR"]:
     run.finish()
 
     # read results from logdir
-    """
     results[reward] = {}
     with open(f"{logdir}/evaluations.npz", "rb") as f:
         data = np.load(f)
         results[reward]["timesteps"] = data["timesteps"]
         results[reward]["rewards"] = data["results"]
 
-    # evaluate trained model
-    rewards, lengths = evaluate_policy(
-        model, eval_env, n_eval_episodes=10, render=True, return_episode_rewards=True
-    )
 
-    print(f"Reward: {np.mean(rewards):.2f} +/- {np.std(rewards):.2f}")
-    print(f"Length: {np.mean(rewards):.2f} +/- {np.std(rewards):.2f}")
-    """
-
-exit(0)
 # plot learning curves
 import matplotlib.pyplot as plt
 
 plt.figure(figsize=(10, 5))
-plt.title(f"Learning Curves - {env_id} - PPO")
+plt.title(f"Learning Curves - {cfg['env_id']} - PPO")
 
 for reward in results:
     rewards = results[reward]["rewards"]
@@ -134,5 +126,5 @@ plt.ylabel("Reward")
 plt.subplots_adjust(bottom=0.2)
 plt.legend(bbox_to_anchor=(0.5, -0.25), loc="lower center", ncol=len(results))
 
-plt.savefig(outdir + "/learning_curves.png")
+plt.savefig(group_logdir + "/learning_curves.png")
 plt.show()
