@@ -14,10 +14,6 @@ import shaping
 from training.schedules import linear_schedule
 from training.video_recorder_cb import VideoRecorderCallback
 
-import os
-
-os.environ["WANDB_MODE"] = "offline"
-
 ALGOS = {"ppo": PPO, "sac": SAC}
 REWARDS = ["default", "TLTL", "BHNR", "HPRS"]
 
