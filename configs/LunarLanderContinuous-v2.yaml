@@ -1,6 +1,6 @@
 specs:
   - 'ensure abs "x" <= "x_limit"'
-  - 'conquer "dist" <= 0.0'
+  - 'conquer "neg_dist" <= 0.0'
   - 'encourage abs "theta" <= "theta_comfort"'
   - 'encourage abs "theta_dot" <= "theta_dot_comfort"'
 
@@ -22,8 +22,13 @@ constants:
     description: "angular velocity limit which determines a comfortable fly"
 
 variables:
+  - name: x
+    fn: "state[0]"
+    min: -1.5
+    max: 1.5
+    description: "x position of the lander"
   - name: neg_dist_x
-    fn: "- (state[0] - half_landing_pad)"
+    fn: "- (x - half_landing_pad)"
     min: -1.5
     max: 1.5
     description: "negative distance to the landing pad"
