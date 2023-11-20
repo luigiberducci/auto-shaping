@@ -20,18 +20,22 @@ constants:
 
 variables:
   - name: x
+    fn: "state[0]"
     min: -2.4
     max: 2.4
     description: "x position of the cart"
   - name: x_dot
+    fn: "state[1]"
     min: -5.0
     max: 5.0
     description: "velocity of the cart"
   - name: theta
+    fn: "state[2]"
     min: -0.2
     max: 0.2
     description: "angle of the pole"
   - name: theta_dot
+    fn: "state[3]"
     min: -5.0
     max: 5.0
     description: "angular velocity of the pole"

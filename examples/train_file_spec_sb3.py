@@ -9,7 +9,6 @@ RENDER = False  # Set to True to render the environment after training
 
 env = gym.make("CartPole-v1", render_mode="rgb_array")
 env = shaping.wrap(env=env, reward="HPRS", spec="../configs/CartPole-v1.yaml")
-env = FlattenObservation(env)
 
 model = A2C("MlpPolicy", env, verbose=1)
 model.learn(total_timesteps=5_000)

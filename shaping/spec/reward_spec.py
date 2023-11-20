@@ -16,7 +16,7 @@ def check_var(name, min, max, fn=None, description=None):
     assert isinstance(min, (int, float)), f"Variable min must be a number, got {type(min)}"
     assert isinstance(max, (int, float)), f"Variable max must be a number, got {type(max)}"
     assert min < max, f"Variable has min value greater than max value"
-    assert fn is None or isinstance(fn, str), f"Variable fn must be a expression as string or None, got {type(fn)}"
+    assert isinstance(fn, str), f"Variable fn must be a expression as string, got {type(fn)}"
     assert description is None or isinstance(description,
                                              str), f"Variable description must be a string or None, got {type(description)}"
 

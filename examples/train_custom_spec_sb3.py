@@ -5,31 +5,26 @@ from stable_baselines3 import A2C
 
 from shaping import Variable
 from shaping.tltl_shaping import TLTLWrapper
-from shaping.utils.dictionary_wrapper import DictWrapper
 
 RENDER=False    # Set to True to render the environment after training
 
 env = gymnasium.make("CartPole-v1", render_mode="rgb_array")
-env = DictWrapper(env, variables=["x", "x_dot", "theta", "theta_dot"])
 
 specs = [
-    'ensure "x" < 2.4',
-    'ensure "x" > -2.4',
-    'ensure "theta" < 0.2',
-    'ensure "theta" > -0.2',
+    'ensure abs "x" < 2.4',
+    'ensure abs "theta" < 0.2',
 ]
 variables = [
-    Variable(name="x", min=-2.4, max=2.4),
-    Variable(name="x_dot", min=-3.0, max=3.0),
-    Variable(name="theta", min=-0.2, max=0.2),
-    Variable(name="theta_dot", min=-3.0, max=3.0),
+    Variable(name="x", fn="state[0]", min=-2.4, max=2.4),
+    Variable(name="x_dot", fn="state[1]",  min=-3.0, max=3.0),
+    Variable(name="theta", fn="state[2]", min=-0.2, max=0.2),
+    Variable(name="theta_dot", fn="state[3]", min=-3.0, max=3.0),
 ]
 
 env = TLTLWrapper(env, specs=specs, variables=variables)
-env = FlattenObservation(env)
 
 model = A2C("MlpPolicy", env, verbose=1)
-model.learn(total_timesteps=10_000)
+model.learn(total_timesteps=5_000)
 
 vec_env = model.get_env()
 obs = vec_env.reset()

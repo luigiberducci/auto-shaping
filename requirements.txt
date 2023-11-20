@@ -1,4 +1,4 @@
-gymnasium[classic-control]
+gymnasium[classic-control,box2d]
 pygame
 opencv-python
 git+https://github.com/nickovic/rtamt.git@filtering

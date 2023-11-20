@@ -3,7 +3,6 @@ from typing import List, Callable
 
 import gymnasium
 
-from shaping.utils.dictionary_wrapper import DictWrapper
 
 
 class CollectionWrapper(gymnasium.Wrapper, gymnasium.utils.RecordConstructorArgs):
@@ -27,9 +26,6 @@ class CollectionWrapper(gymnasium.Wrapper, gymnasium.utils.RecordConstructorArgs
             self, variables=variables, extractor_fn=extractor_fn, window_len=window_len,
         )
 
-        if isinstance(env.observation_space, gymnasium.spaces.Box):
-            self._env = DictWrapper(env, variables=variables, extractor_fn=extractor_fn)
-
         super(CollectionWrapper, self).__init__(env)
 
         self._variables = variables
@@ -49,8 +45,8 @@ class CollectionWrapper(gymnasium.Wrapper, gymnasium.utils.RecordConstructorArgs
 
         # collect observable variables from the state
         obs = self._extractor_fn(state) if self._extractor_fn else state
-        for key, value in obs.items():
-            self._episode[key].append(value)
+        for key in self._variables:
+            self._episode[key].append(obs[key])
 
         if not self._flag_time:
             self._time += 1.0
@@ -66,11 +62,11 @@ class CollectionWrapper(gymnasium.Wrapper, gymnasium.utils.RecordConstructorArgs
 
         # collect observable variables from the state
         obs = self._extractor_fn(state) if self._extractor_fn else state
-        for key, value in obs.items():
-            self._episode[key].append(value)
+        for key in self._variables:
+            self._episode[key].append(obs[key])
 
         if not self._flag_time:
             self._time += 1.0
             self._episode["time"].append(self._time)
 
-        return obs, reward, done, truncated, info
+        return state, reward, done, truncated, info

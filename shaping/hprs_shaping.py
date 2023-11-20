@@ -50,10 +50,6 @@ class SparseSuccessRewardWrapper(gymnasium.Wrapper):
         self._variables = self._spec.variables
         self._constants = self._spec.constants
 
-        assert (
-            type(env.observation_space) == gymnasium.spaces.Dict
-        ), "Observation space must be a dictionary, use DictWrapper"
-
     def _reward(self, state, action, next_state, done, info):
         reward = 0.0
 
@@ -68,8 +64,8 @@ class SparseSuccessRewardWrapper(gymnasium.Wrapper):
 
     def step(self, action):
         next_obs, _, done, truncated, info = super().step(action)
-        extended_state = extend_state(next_obs, self._spec)
-        reward = self._reward(None, action, extended_state, done, info)
+        ext_state = extend_state(env=self, state=next_obs, spec=self._spec)
+        reward = self._reward(None, action, ext_state, done, info)
         return next_obs, reward, done, truncated, info
 
 
@@ -109,15 +105,15 @@ class HPRSWrapper(SparseSuccessRewardWrapper):
         self._obs = None
 
     def reset(self, **kwargs):
-        self._obs, info = super().reset(**kwargs)
-        return self._obs, info
+        obs, info = super().reset(**kwargs)
+        self._obs = extend_state(env=self, state=obs, spec=self._spec)
+        return obs, info
 
     def step(self, action):
         next_obs, _, done, truncated, info = super().step(action)
-        ext_state = extend_state(self._obs, self._spec)
-        ext_next_state = extend_state(next_obs, self._spec)
-        reward = self._hprs_reward(ext_state, action, ext_next_state, done, info)
-        self._obs = next_obs
+        ext_next_obs = extend_state(env=self, state=next_obs, spec=self._spec)
+        reward = self._hprs_reward(self._obs, action, ext_next_obs, done, info)
+        self._obs = ext_next_obs
         return next_obs, reward, done, truncated, info
 
     def _hprs_reward(self, state, action, next_state, done, info):
