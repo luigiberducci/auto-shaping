@@ -46,7 +46,6 @@ class VideoRecorderCallback(BaseCallback):
         if self.n_calls % self._render_freq == 0:
             t0 = time.time()
 
-
             if self._video_folder is not None:
                 video_name = f"video-step-{self.n_calls}"
                 base_path = os.path.join(self._video_folder, video_name)

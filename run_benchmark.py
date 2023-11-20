@@ -1,4 +1,3 @@
-import os
 import logging
 import pathlib
 import re
@@ -9,7 +8,6 @@ import numpy as np
 import run
 
 logging.basicConfig(level=logging.INFO)
-os.environ["WANDB_MODE"] = "offline"
 
 config = {
     "algo": "ppo",
@@ -33,7 +31,6 @@ algo, env_id = config["algo"], config["env_id"]
 
 rewards = ["default", "HPRS", "TLTL", "BHNR"]
 for reward in rewards:
-    break
     print(f"Training with {reward} reward shaping")
 
     cfg = config.copy()
@@ -44,10 +41,16 @@ for reward in rewards:
 # load results from logdirectory
 results = {}
 for reward in rewards:
-    eval_files = list(pathlib.Path(config["log_dir"]).glob(f"**/{algo}-{env_id}-{reward}/*/evaluations.npz"))
+    eval_files = list(
+        pathlib.Path(config["log_dir"]).glob(
+            f"**/{algo}-{env_id}-{reward}/*/evaluations.npz"
+        )
+    )
 
     if len(eval_files) > 1:
-        logging.warning(f"Found {len(eval_files)} eval files for {algo}-{env_id}-{reward}. Plotting only the 1st one.")
+        logging.warning(
+            f"Found {len(eval_files)} eval files for {algo}-{env_id}-{reward}. Plotting only the 1st one."
+        )
 
     file = eval_files[0]
     if len(re.findall(f"{algo}-{env_id}-{reward}", str(file.parent))) > 0:

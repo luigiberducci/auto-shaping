@@ -4,7 +4,6 @@ from typing import List, Callable
 import gymnasium
 
 
-
 class CollectionWrapper(gymnasium.Wrapper, gymnasium.utils.RecordConstructorArgs):
     """
     Collects k-th most recent observable varibles over an episode.

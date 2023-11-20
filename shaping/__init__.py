@@ -67,5 +67,8 @@ def wrap(
         return env
 
     return __entry_points__[reward](
-        env, specs=specs_str, variables=list(spec.variables.values()), constants=list(spec.constants.values())
+        env,
+        specs=specs_str,
+        variables=list(spec.variables.values()),
+        constants=list(spec.constants.values()),
     )

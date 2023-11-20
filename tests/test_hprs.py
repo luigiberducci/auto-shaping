@@ -5,12 +5,14 @@ import numpy as np
 
 from shaping.hprs_shaping import HPRSWrapper
 from shaping.utils.utils import extend_state
-from tests.utility_functions import get_cartpole_example1_spec, get_cartpole_example2_spec, \
-    get_cartpole_spec_within_xlim
+from tests.utility_functions import (
+    get_cartpole_example1_spec,
+    get_cartpole_example2_spec,
+    get_cartpole_spec_within_xlim,
+)
 
 
 class TestHPRS(unittest.TestCase):
-
     def test_wrapper_obs(self):
         """
         Test if the wrapper correctly store the last observation to compute the potential rewards.
@@ -53,7 +55,10 @@ class TestHPRS(unittest.TestCase):
 
         while not done:
             obs, reward, done, truncated, info = env.step(env.action_space.sample())
-            self.assertTrue(reward > 0.95, "expected cartpole within the goal region, then reward ~ 1.0")
+            self.assertTrue(
+                reward > 0.95,
+                "expected cartpole within the goal region, then reward ~ 1.0",
+            )
 
         env.close()
 
@@ -70,6 +75,9 @@ class TestHPRS(unittest.TestCase):
 
         while not done:
             obs, r, done, truncated, info = env.step(env.action_space.sample())
-            self.assertTrue(r > 0.95 or abs(r) < 0.05, f"expected high reward (balance) or small negative (if falling)")
+            self.assertTrue(
+                r > 0.95 or abs(r) < 0.05,
+                f"expected high reward (balance) or small negative (if falling)",
+            )
 
         env.close()

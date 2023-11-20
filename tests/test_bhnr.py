@@ -1,7 +1,10 @@
 import unittest
 
 from shaping.bhnr_shaping import BHNRWrapper
-from tests.utility_functions import get_cartpole_example2_spec, get_cartpole_example1_spec
+from tests.utility_functions import (
+    get_cartpole_example2_spec,
+    get_cartpole_example1_spec,
+)
 
 
 class TestBHNR(unittest.TestCase):
@@ -48,4 +51,3 @@ class TestBHNR(unittest.TestCase):
             )
 
         env.close()
-

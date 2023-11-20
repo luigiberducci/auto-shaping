@@ -14,6 +14,7 @@ def get_cartpole_spec_within_xlim():
     ]
     return specs, constants, variables
 
+
 def get_cartpole_spec_within_xlim_and_balance():
     specs = [
         'ensure abs "x" <= 2.4',
@@ -27,6 +28,8 @@ def get_cartpole_spec_within_xlim_and_balance():
         Variable(name="theta_dot", fn="state[3]", min=-3.0, max=3.0),
     ]
     return specs, constants, variables
+
+
 def get_cartpole_example1_spec():
     specs = [
         'ensure abs "x" <= 2.4',
@@ -48,7 +51,6 @@ def get_cartpole_example2_spec():
         'achieve "dist" < 2.4',
         'ensure abs "theta" < 0.2',
         'ensure abs "x" < 2.4',
-
     ]
     constants = [
         Constant(name="x_goal", value=0.0),
@@ -62,6 +64,8 @@ def get_cartpole_example2_spec():
         Variable(name="theta", fn="state[2]", min=-0.2, max=0.2),
         Variable(name="theta_dot", fn="state[3]", min=-3.0, max=3.0),
         Variable(name="y", min=0.0, max=110.0, fn="axle_y + pole_length*np.cos(theta)"),
-        Variable(name="dist", min=0.0, max=2.4, fn="np.sqrt((x-x_goal)**2 + (y-y_goal)**2)"),
+        Variable(
+            name="dist", min=0.0, max=2.4, fn="np.sqrt((x-x_goal)**2 + (y-y_goal)**2)"
+        ),
     ]
     return specs, constants, variables

@@ -33,7 +33,9 @@ class TLTLWrapper(CollectionWrapper):
                     f"Failed to parse requirement: {req_spec}, if comfort requirement no worries because it is not supported by STL"
                 )
         self._stl_spec = " and ".join(reqs)
-        self._variables = [var for var in self._spec.variables] + [var for var in self._spec.constants]
+        self._variables = [var for var in self._spec.variables] + [
+            var for var in self._spec.constants
+        ]
 
         extractor_fn = lambda state: extend_state(env=env, state=state, spec=self._spec)
         super(TLTLWrapper, self).__init__(

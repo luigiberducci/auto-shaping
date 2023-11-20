@@ -23,8 +23,6 @@ fns = {
 }
 
 
-
-
 class SparseSuccessRewardWrapper(gymnasium.Wrapper):
     """
     This wrapper provides a reward of 1.0 every time the agent satisfies the target condition.

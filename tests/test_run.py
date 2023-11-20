@@ -37,10 +37,14 @@ class TestRunScript(unittest.TestCase):
 
         run.main(args)
 
-        self.assertTrue(pathlib.Path("tmp-logs").exists(), "tmp-logs directory does not exist.")
+        self.assertTrue(
+            pathlib.Path("tmp-logs").exists(), "tmp-logs directory does not exist."
+        )
 
         subdirs = pathlib.Path("tmp-logs").glob(f"*{args.train_reward}*")
-        self.assertTrue(len(list(subdirs)) == 1, f"exp log dir not found among {subdirs}")
+        self.assertTrue(
+            len(list(subdirs)) == 1, f"exp log dir not found among {subdirs}"
+        )
 
         # delete tmp-logs and subdirs
         rmtree("tmp-logs")
@@ -59,7 +63,12 @@ class TestRunScript(unittest.TestCase):
 
     def test_run_ppo_cartpole_hparams_default(self):
         hparams_file = self._cpole_hparams_file
-        self._quick_test(env_id="CartPole-v1", algo="ppo", train_reward="default", hparams_file=hparams_file)
+        self._quick_test(
+            env_id="CartPole-v1",
+            algo="ppo",
+            train_reward="default",
+            hparams_file=hparams_file,
+        )
 
     def test_run_sac_bipedalwalker_default(self):
         self._quick_test(env_id="BipedalWalker-v3", algo="sac", train_reward="default")
@@ -75,20 +84,38 @@ class TestRunScript(unittest.TestCase):
 
     def test_run_sac_bipedalwalker_hparams_default(self):
         hparams_file = self._bw_hparams_file
-        self._quick_test(env_id="BipedalWalker-v3", algo="sac", train_reward="default", hparams_file=hparams_file)
+        self._quick_test(
+            env_id="BipedalWalker-v3",
+            algo="sac",
+            train_reward="default",
+            hparams_file=hparams_file,
+        )
 
     def test_run_sac_lunarlander_default(self):
-        self._quick_test(env_id="LunarLanderContinuous-v2", algo="sac", train_reward="default")
+        self._quick_test(
+            env_id="LunarLanderContinuous-v2", algo="sac", train_reward="default"
+        )
 
     def test_run_sac_lunarlander_HPRS(self):
-        self._quick_test(env_id="LunarLanderContinuous-v2", algo="sac", train_reward="HPRS")
+        self._quick_test(
+            env_id="LunarLanderContinuous-v2", algo="sac", train_reward="HPRS"
+        )
 
     def test_run_sac_lunarlander_TLTL(self):
-        self._quick_test(env_id="LunarLanderContinuous-v2", algo="sac", train_reward="TLTL")
+        self._quick_test(
+            env_id="LunarLanderContinuous-v2", algo="sac", train_reward="TLTL"
+        )
 
     def test_run_sac_lunarlander_BHNR(self):
-        self._quick_test(env_id="LunarLanderContinuous-v2", algo="sac", train_reward="BHNR")
+        self._quick_test(
+            env_id="LunarLanderContinuous-v2", algo="sac", train_reward="BHNR"
+        )
 
     def test_run_sac_lunarlander_hparams_default(self):
         hparams_file = self._ll_hparams_file
-        self._quick_test(env_id="LunarLanderContinuous-v2", algo="sac", train_reward="default", hparams_file=hparams_file)
+        self._quick_test(
+            env_id="LunarLanderContinuous-v2",
+            algo="sac",
+            train_reward="default",
+            hparams_file=hparams_file,
+        )

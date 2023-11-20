@@ -33,6 +33,7 @@ def monitor_stl_episode(
 
     return robustness_trace
 
+
 def monitor_filtering_stl_episode(
     stl_spec: str, vars: List[str], episode: Dict[str, Any], types: List[str] = None
 ):
