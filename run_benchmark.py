@@ -1,3 +1,4 @@
+import argparse
 import logging
 import pathlib
 import re
@@ -9,12 +10,20 @@ import run
 
 logging.basicConfig(level=logging.INFO)
 
+parser = argparse.ArgumentParser()
+parser.add_argument("--env-id", type=str, required=True)
+parser.add_argument("--algo", type=str, required=True)
+parser.add_argument("--total-timesteps", type=int, required=True)
+parser.add_argument("--hparams-file", type=str, default=None)
+
+args = parser.parse_args()
+
 config = {
-    "algo": "ppo",
-    "env_id": "CartPole-v1",
-    "total_timesteps": 1e5,
+    "algo": args.algo,
+    "env_id": args.env_id,
+    "total_timesteps": args.total_timesteps,
     "eval_frequency": 1e4,
-    "hparams_file": None,
+    "hparams_file": args.hparams_file,
     "train_reward": None,  # set in loop
     "eval_reward": "default",
     "spec_file": None,
@@ -25,6 +34,7 @@ config = {
     "wandb_group": None,
     "seed": 0,
 }
+
 
 # run benchmark
 algo, env_id = config["algo"], config["env_id"]
