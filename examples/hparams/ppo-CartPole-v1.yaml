@@ -1,5 +1,5 @@
 policy: 'MlpPolicy'
-n_steps: 32
+n_steps: 256
 batch_size: 2048
 gae_lambda: 0.8
 gamma: 0.98
