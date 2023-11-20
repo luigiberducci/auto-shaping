@@ -1,6 +1,7 @@
 import pathlib
 from datetime import datetime
 
+import numpy as np
 import yaml
 from gymnasium.wrappers import FlattenObservation
 from stable_baselines3 import PPO, SAC
@@ -62,7 +63,8 @@ def main(args):
         callbacks.append(wand_callback)
 
     # set up environments
-    set_random_seed(args.seed)
+    seed = args.seed or np.random.randint(0, 2 ** 32 - 1)
+    set_random_seed(seed)
 
     env_kwargs = {"render_mode": "rgb_array"}
     train_env = shaping.wrap(
