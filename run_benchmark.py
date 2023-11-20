@@ -26,13 +26,13 @@ config = {
     "hparams_file": args.hparams_file,
     "train_reward": None,  # set in loop
     "eval_reward": "default",
-    "spec_file": None,
+    "spec_file": "configs/CartPole-v1.yaml",
     "log_dir": "logs",
     "wandb": False,
     "wandb_entity": None,
     "wandb_project": None,
     "wandb_group": None,
-    "seed": 0,
+    "seed": None,
 }
 
 
