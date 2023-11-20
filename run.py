@@ -52,7 +52,7 @@ def main(args):
             project=args.wandb_project,
             name=exp_name,
             group=args.wandb_group,
-            config=dict(args),
+            config=vars(args),
         )
 
         wand_callback = WandbCallback(model_save_path=f"{logdir}/models", verbose=2)
