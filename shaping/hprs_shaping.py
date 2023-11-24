@@ -76,7 +76,7 @@ class HPRSWrapper(SparseSuccessRewardWrapper):
         specs: list[str],
         variables: list[Variable],
         constants: list[Constant] = None,
-        gamma: float = 0.99,
+        gamma: float = 1.0,
     ):
         gymnasium.utils.RecordConstructorArgs.__init__(
             self, specs=specs, variables=variables, constants=constants, gamma=gamma,
@@ -151,7 +151,7 @@ class HPRSWrapper(SparseSuccessRewardWrapper):
     def _target_shaping(self, state) -> float:
         reward = 0.0
 
-        safety_weight = 0.0
+        safety_weight = 1.0
         for spec in self._safety_specs:
             (fn, var), aritm_op, threshold = spec._predicate
             cmp_lambda = _cmp_lambdas[aritm_op]
