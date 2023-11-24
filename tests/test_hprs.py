@@ -60,7 +60,8 @@ class TestHPRS(unittest.TestCase):
         done = False
 
         while not done:
-            obs, reward, done, truncated, info = env.step(env.action_space.sample())
+            action = 0
+            obs, reward, done, truncated, info = env.step(action)
             self.assertTrue(
                 reward > 0.95,
                 "expected cartpole within the goal region, then reward ~ 1.0",
