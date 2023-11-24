@@ -1,8 +1,12 @@
 import unittest
 
 from shaping.tltl_shaping import TLTLWrapper
-from tests.utility_functions import get_cartpole_spec_within_xlim, get_cartpole_example1_spec, \
-    get_cartpole_spec_within_xlim_and_balance, get_cartpole_example2_spec
+from tests.utility_functions import (
+    get_cartpole_spec_within_xlim,
+    get_cartpole_example1_spec,
+    get_cartpole_spec_within_xlim_and_balance,
+    get_cartpole_example2_spec,
+)
 
 
 class TestTLTL(unittest.TestCase):
