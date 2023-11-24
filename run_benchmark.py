@@ -26,7 +26,7 @@ config = {
     "hparams_file": args.hparams_file,
     "train_reward": None,  # set in loop
     "eval_reward": "default",
-    "spec_file": "configs/CartPole-v1.yaml",
+    "spec_file": f"configs/{args.env_id}.yaml",
     "log_dir": "logs",
     "wandb": False,
     "wandb_entity": None,
@@ -39,7 +39,7 @@ config = {
 # run benchmark
 algo, env_id = config["algo"], config["env_id"]
 
-rewards = ["default", "HPRS", "TLTL", "BHNR"]
+rewards = ["HPRS", "default",  "TLTL", "BHNR"]
 for reward in rewards:
     print(f"Training with {reward} reward shaping")
 
