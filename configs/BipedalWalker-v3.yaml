@@ -1,10 +1,10 @@
 specs:
   - 'achieve "x" >= "x_goal"'
   - 'ensure "min_lidar" >= "dist_hull_limit"'
-  - 'encourage "horizontal_speed" >= "horizontal_speed_target"'
-  - 'encourage abs "hull_angle" <= "hull_angle_limit"'
-  - 'encourage abs "vertical_speed" <= "vertical_speed_limit"'
-  - 'encourage abs "angular_velocity" <= "angular_velocity_limit"'
+  #- 'encourage "horizontal_speed" >= "horizontal_speed_target"'
+  #- 'encourage abs "hull_angle" <= "hull_angle_limit"'
+  #- 'encourage abs "vertical_speed" <= "vertical_speed_limit"'
+  #- 'encourage abs "angular_velocity" <= "angular_velocity_limit"'
 
 constants:
   # from bipedal_walker constants
