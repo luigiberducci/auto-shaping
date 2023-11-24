@@ -69,3 +69,73 @@ def get_cartpole_example2_spec():
         ),
     ]
     return specs, constants, variables
+
+
+def get_bipedal_walker_safety():
+    specs = ['achieve "const" < 0', 'ensure "collision" <= 0.0']
+    constants = [
+        Constant(name="dist_hull_limit", value=0.225),
+    ]
+    variables = [
+        Variable(name="const", fn="1.0", min=0.0, max=1.0),
+        Variable(
+            name="collision", fn="-1.0 if env.game_over else 1.0", min=-1.0, max=1.0
+        ),
+    ]
+
+    return specs, constants, variables
+
+
+def get_bipedal_walker_safety_minlidar():
+    specs = [
+        'achieve "const" < 0',
+        'ensure "min_lidar" >= "dist_hull_limit"',
+    ]
+    constants = [
+        Constant(name="dist_hull_limit", value=0.225),
+    ]
+    variables = [
+        Variable(name="const", fn="1.0", min=0.0, max=1.0),
+        Variable(name="min_lidar", fn="np.min(state[-10:])", min=0.0, max=1.0),
+    ]
+
+    return specs, constants, variables
+
+
+def get_bipedal_walker_achieve_norm():
+    """
+    Write achieve w.r.t. a normalized distance "remaining_x".
+    """
+    specs = [
+        'achieve "remaining_x" <= 0.0',
+    ]
+    constants = [
+        Constant(name="x_goal", value=88.667),
+    ]
+    variables = [
+        Variable(
+            name="remaining_x",
+            fn="(x_goal - env.hull.position[0])/x_goal",
+            min=0.0,
+            max=1.0,
+        ),
+    ]
+
+    return specs, constants, variables
+
+
+def get_bipedal_walker_achieve_unnorm():
+    """
+    Write achieve x_goal without normalization.
+    """
+    specs = [
+        'achieve "x" >= "x_goal"',
+    ]
+    constants = [
+        Constant(name="x_goal", value=88.667),
+    ]
+    variables = [
+        Variable(name="x", fn="env.hull.position[0]", min=0.0, max=88.667),
+    ]
+
+    return specs, constants, variables
