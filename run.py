@@ -53,6 +53,9 @@ def main(args):
             name=exp_name,
             group=args.wandb_group,
             config=vars(args),
+            sync_tensorboard=True,  # auto-upload sb3's tensorboard metrics
+            monitor_gym=True,
+            save_code=False,
         )
 
         wand_callback = WandbCallback(model_save_path=f"{logdir}/models", verbose=2)

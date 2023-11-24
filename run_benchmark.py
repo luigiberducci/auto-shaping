@@ -28,9 +28,9 @@ config = {
     "eval_reward": "default",
     "spec_file": f"configs/{args.env_id}.yaml",
     "log_dir": "logs",
-    "wandb": False,
-    "wandb_entity": None,
-    "wandb_project": None,
+    "wandb": True,
+    "wandb_entity": "luigiberducci",
+    "wandb_project": "auto-shaping",
     "wandb_group": None,
     "seed": None,
 }
@@ -39,7 +39,7 @@ config = {
 # run benchmark
 algo, env_id = config["algo"], config["env_id"]
 
-rewards = ["HPRS", "default",  "TLTL", "BHNR"]
+rewards = ["HPRS", "TLTL", "BHNR"] #["default", "HPRS", "TLTL", "BHNR"]
 for reward in rewards:
     print(f"Training with {reward} reward shaping")
 
