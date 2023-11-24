@@ -5,3 +5,4 @@ git+https://github.com/nickovic/rtamt.git@filtering
 lark
 pyyaml
 charset-normalizer==2.1.0
+pandas # used in tests
