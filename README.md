@@ -13,8 +13,11 @@ Specification-based library for automatic reward shaping.
 
 ## :warning: Disclaimer
 This repository aims to provide a unified library for automatic reward shaping
-and reimplements the methods described in the table.
+and reimplements the methods described in the table below.
 However, it is not meant to validate the results of the original papers. 
+
+#### If you are a reproducibility reviewer for HPRS, please refer to the [original codebase](https://github.com/edalexAguilar/reward_shaping).
+
 
 ## Methods
 
@@ -31,9 +34,6 @@ However, it is not meant to validate the results of the original papers.
 :x: Not supported
 
 :construction_worker: Work in progress
-
-
-#### If you are a reproducibility reviewer for HPRS, please refer to the [original codebase](https://github.com/edalexAguilar/reward_shaping).
 
 
 ## Specification Language
