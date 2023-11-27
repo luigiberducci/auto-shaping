@@ -29,7 +29,7 @@ constants:
 
 variables:
   - name: "x"
-    fn: "env.hull.position[0]"
+    fn: "env.unwrapped.hull.position[0]"
     min: 0.0
     max: 88.667  # x_goal
     description: "x position of the hull (unobserved but used in reward)"
