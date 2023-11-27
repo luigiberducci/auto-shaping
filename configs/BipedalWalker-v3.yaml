@@ -10,6 +10,9 @@ constants:
   # from bipedal_walker constants
   - name: "x_goal"
     value: 88.667
+  - name: "dist_hull_limit"
+    value: 0.225
+    description: "distance between hull and ground which terminates the episode"
   - name: "hull_angle_limit"
     value: 0.08726
     description: "hull angle limit which terminates the episode"
