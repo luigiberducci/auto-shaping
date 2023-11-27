@@ -27,6 +27,15 @@ Specification-based library for automatic reward shaping.
 
 :construction_worker: Work in progress
 
+## :warning: Disclaimer
+This repository aims to provide a unified library for automatic reward shaping
+and reimplements the methods described in the table.
+However, it is not meant to validate the results of the original papers. 
+
+
+#### If you are a reproducibility reviewer for HPRS, please refer to the [original codebase](https://github.com/edalexAguilar/reward_shaping).
+
+
 ## Specification Language
 
 The task specification consists of a set of requirements, as in [4]. The requirement syntax is as follows:
