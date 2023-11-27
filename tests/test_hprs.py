@@ -15,6 +15,7 @@ from tests.utility_functions import (
     get_bipedal_walker_achieve_norm,
     get_bipedal_walker_achieve_unnorm,
     get_bipedal_walker_comfort_speed,
+    get_lander_safety_only,
 )
 
 
@@ -228,5 +229,22 @@ class TestHPRS(unittest.TestCase):
             tot_r >= tot_r2,
             f"expected reward to be higher with comfort speed, got {tot_r} < {tot_r2}",
         )
+
+        env.close()
+
+    def test_lunar_lander_safety(self):
+        env = gymnasium.make("LunarLanderContinuous-v2", render_mode=None)
+        specs, constants, variables = get_lander_safety_only()
+        env = HPRSWrapper(env, specs=specs, constants=constants, variables=variables)
+
+        seed = 0
+        obs, info = env.reset(seed=seed)
+        done = False
+
+        while not done:
+            obs, r, done, truncated, info = env.step(np.zeros(4))
+            self.assertTrue(
+                abs(r) <= 1e-6, "expected zero reward (safety on game-over)"
+            )
 
         env.close()

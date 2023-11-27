@@ -156,3 +156,19 @@ def get_bipedal_walker_comfort_speed():
     ]
 
     return specs, constants, variables
+
+
+def get_lander_safety_only():
+    specs = [
+        'achieve "const" < 0',
+        'ensure "collision" <= 0.0',
+    ]
+    constants = []
+    variables = [
+        Variable(name="const", fn="1.0", min=0.0, max=1.0),
+        Variable(
+            name="collision", fn="float(env.unwrapped.game_over)", min=0.0, max=1.0
+        ),
+    ]
+
+    return specs, constants, variables

@@ -1,6 +1,7 @@
 specs:
   - 'ensure abs "x" <= "x_limit"'
-  - 'conquer "neg_dist" <= 0.0'
+  - 'ensure "collision" <= 0.0'
+  - 'conquer "dist" <= 0.0'
   - 'encourage abs "theta" <= "theta_comfort"'
   - 'encourage abs "theta_dot" <= "theta_dot_comfort"'
 
@@ -12,7 +13,7 @@ constants:
     value: 0.15
     description: "half width of the landing pad"
   - name: landing_height
-    value: 0.1
+    value: 0.05
     description: "height of the landing pad"
   - name: theta_comfort
     value: 1.0472 # pi/3
@@ -27,28 +28,30 @@ variables:
     min: -1.5
     max: 1.5
     description: "x position of the lander"
-  - name: neg_dist_x
-    fn: "- (x - half_landing_pad)"
-    min: -1.5
-    max: 1.5
-    description: "negative distance to the landing pad"
-  - name: "neg_dist_y"
-    fn: "- (state[1] - landing_height)"
+  - name: collision
+    fn: "float(env.unwrapped.game_over)"
     min: -1.0
-    max: 0.0
-    description: "negative distance to the landing pad"
-  - name: "neg_dist"
-    fn: "min(neg_dist_x, neg_dist_y)"
-    min: -1.5
-    max: 0.0
-    description: "negative distance to the landing pad"
+    max: 1.0
+    description: "binary collision indicator"
+  - name: dist_x
+    fn: "abs(x) - half_landing_pad"
+    min: 0.0
+    max: 1.5
+  - name: "dist_y"
+    fn: "state[1] - landing_height"
+    min: 0.0
+    max: 1.5
+  - name: "dist"
+    fn: "max(dist_x, dist_y)"
+    min: 0.0
+    max: 1.5
   - name: "theta"
     fn: "state[4]"
-    min: -3.14
-    max: 3.14
+    min: 0.0  # abs ang is norm within 0.0 and pi
+    max: 3.1416
     description: "angle of the lander"
   - name: "theta_dot"
     fn: "state[5]"
-    min: -5.0
-    max: 5.0
+    min: 0.0  # abs ang vel is norm within 0.0 and 1.0
+    max: 1.0
     description: "angular velocity of the lander"
