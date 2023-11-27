@@ -198,7 +198,7 @@ class TestHPRS(unittest.TestCase):
         """
         Test hprs in more complex spec for cartpole env.
         """
-        env = gymnasium.make("BipedalWalker-v3", render_mode="human")
+        env = gymnasium.make("BipedalWalker-v3", render_mode=None)
         specs, constants, variables = get_bipedal_walker_comfort_speed()
         env = HPRSWrapper(env, specs=specs, constants=constants, variables=variables)
 
