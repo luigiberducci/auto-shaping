@@ -14,6 +14,7 @@ from tests.utility_functions import (
     get_bipedal_walker_safety_minlidar,
     get_bipedal_walker_achieve_norm,
     get_bipedal_walker_achieve_unnorm,
+    get_bipedal_walker_comfort_speed,
 )
 
 
@@ -189,6 +190,43 @@ class TestHPRS(unittest.TestCase):
         self.assertTrue(
             tot_r >= 0.0,
             f"expected bipedal walker to fall ahead, wt tot reward slightly > 0.0, got {tot_r}",
+        )
+
+        env.close()
+
+    def test_bipedal_walker_comfort_speed(self):
+        """
+        Test hprs in more complex spec for cartpole env.
+        """
+        env = gymnasium.make("BipedalWalker-v3", render_mode="human")
+        specs, constants, variables = get_bipedal_walker_comfort_speed()
+        env = HPRSWrapper(env, specs=specs, constants=constants, variables=variables)
+
+        env2 = gymnasium.make("BipedalWalker-v3", render_mode=None)
+        specs2, constants2, variables2 = get_bipedal_walker_achieve_unnorm()
+        env2 = HPRSWrapper(
+            env2, specs=specs2, constants=constants2, variables=variables2
+        )
+
+        seed = 0
+        obs, info = env.reset(seed=seed)
+        obs2, info = env2.reset(seed=seed)
+        done = False
+        done2 = False
+
+        tot_r = 0.0
+        tot_r2 = 0.0
+        while not (done or done2):
+            obs, r, done, truncated, info = env.step(np.zeros(4))
+            obs2, r2, done2, truncated2, info2 = env2.step(np.zeros(4))
+            # print(r, r2)
+            tot_r += r
+            tot_r2 += r2
+
+        print("tot r:", tot_r, "tot r2:", tot_r2)
+        self.assertTrue(
+            tot_r >= tot_r2,
+            f"expected reward to be higher with comfort speed, got {tot_r} < {tot_r2}",
         )
 
         env.close()

@@ -139,3 +139,20 @@ def get_bipedal_walker_achieve_unnorm():
     ]
 
     return specs, constants, variables
+
+
+def get_bipedal_walker_comfort_speed():
+    specs = [
+        'achieve "x" >= "x_goal"',
+        'encourage "horizontal_speed" >= "horizontal_speed_target"',
+    ]
+    constants = [
+        Constant(name="horizontal_speed_target", value=0.30),
+        Constant(name="x_goal", value=88.667),
+    ]
+    variables = [
+        Variable(name="x", fn="env.hull.position[0]", min=0.0, max=88.667),
+        Variable(name="horizontal_speed", fn="state[2]", min=0.0, max=1.0),
+    ]
+
+    return specs, constants, variables

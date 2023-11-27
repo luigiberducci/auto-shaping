@@ -10,9 +10,6 @@ constants:
   # from bipedal_walker constants
   - name: "x_goal"
     value: 88.667
-  #
-  - name: "dist_hull_limit"
-    value: 0.225
   - name: "hull_angle_limit"
     value: 0.08726
     description: "hull angle limit which terminates the episode"
@@ -35,22 +32,22 @@ variables:
     description: "x position of the hull (unobserved but used in reward)"
   - name: "hull_angle"
     fn: "state[0]"
-    min: -3.14
-    max: 3.14
+    min: 0.0  # from env, abs hull angle is normally within 0.0 and 1.0
+    max: 1.0
   - name: "angular_velocity"
     fn: "state[1]"
-    min: -5.0
-    max: 5.0
+    min: 0.0
+    max: 1.0
     description: ""
   - name: "horizontal_speed"
     fn: "state[2]"
-    min: -5.0
-    max: 5.0
+    min: 0.0
+    max: 1.0
     description: ""
   - name: "vertical_speed"
     fn: "state[3]"
-    min: -5.0
-    max: 5.0
+    min: 0.0
+    max: 1.0
     description: ""
   - name: "min_lidar"
     fn: "np.min(state[-10:])"
