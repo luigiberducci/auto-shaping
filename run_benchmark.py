@@ -39,7 +39,7 @@ config = {
 # run benchmark
 algo, env_id = config["algo"], config["env_id"]
 
-rewards = ["HPRS", "TLTL", "BHNR"] #["default", "HPRS", "TLTL", "BHNR"]
+rewards = ["HPRS", "TLTL", "BHNR"]  # ["default", "HPRS", "TLTL", "BHNR"]
 for reward in rewards:
     print(f"Training with {reward} reward shaping")
 
