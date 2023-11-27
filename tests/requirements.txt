@@ -1,1 +1,2 @@
-pandas
+pandas # used in tests
+stable-baselines3[extra]
