@@ -30,11 +30,13 @@ class TestHPRS(unittest.TestCase):
 
         obs, info = env.reset()
         done = False
+        action = np.zeros_like(env.action_space.sample())
 
         while not done:
-            ext_obs = extend_state(env=env, state=obs, spec=env._spec)
+            ext_obs = extend_state(env=env, state=obs, action=action, spec=env._spec)
             self.assertTrue(ext_obs == env._obs)
-            obs, reward, done, truncated, info = env.step(env.action_space.sample())
+            action = env.action_space.sample()
+            obs, reward, done, truncated, info = env.step(action)
 
         env.close()
 
