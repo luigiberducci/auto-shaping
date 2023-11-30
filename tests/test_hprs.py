@@ -14,6 +14,8 @@ from tests.utility_functions import (
     get_bipedal_walker_safety_minlidar,
     get_bipedal_walker_achieve_norm,
     get_bipedal_walker_achieve_unnorm,
+    get_bipedal_walker_comfort_speed,
+    get_lander_safety_only,
 )
 
 
@@ -28,11 +30,13 @@ class TestHPRS(unittest.TestCase):
 
         obs, info = env.reset()
         done = False
+        action = np.zeros_like(env.action_space.sample())
 
         while not done:
-            ext_obs = extend_state(env=env, state=obs, spec=env._spec)
+            ext_obs = extend_state(env=env, state=obs, action=action, spec=env._spec)
             self.assertTrue(ext_obs == env._obs)
-            obs, reward, done, truncated, info = env.step(env.action_space.sample())
+            action = env.action_space.sample()
+            obs, reward, done, truncated, info = env.step(action)
 
         env.close()
 
@@ -60,7 +64,8 @@ class TestHPRS(unittest.TestCase):
         done = False
 
         while not done:
-            obs, reward, done, truncated, info = env.step(env.action_space.sample())
+            action = 0
+            obs, reward, done, truncated, info = env.step(action)
             self.assertTrue(
                 reward > 0.95,
                 "expected cartpole within the goal region, then reward ~ 1.0",
@@ -189,5 +194,59 @@ class TestHPRS(unittest.TestCase):
             tot_r >= 0.0,
             f"expected bipedal walker to fall ahead, wt tot reward slightly > 0.0, got {tot_r}",
         )
+
+        env.close()
+
+    def test_bipedal_walker_comfort_speed(self):
+        """
+        Test hprs in more complex spec for cartpole env.
+        """
+        env = gymnasium.make("BipedalWalker-v3", render_mode=None)
+        specs, constants, variables = get_bipedal_walker_comfort_speed()
+        env = HPRSWrapper(env, specs=specs, constants=constants, variables=variables)
+
+        env2 = gymnasium.make("BipedalWalker-v3", render_mode=None)
+        specs2, constants2, variables2 = get_bipedal_walker_achieve_unnorm()
+        env2 = HPRSWrapper(
+            env2, specs=specs2, constants=constants2, variables=variables2
+        )
+
+        seed = 0
+        obs, info = env.reset(seed=seed)
+        obs2, info = env2.reset(seed=seed)
+        done = False
+        done2 = False
+
+        tot_r = 0.0
+        tot_r2 = 0.0
+        while not (done or done2):
+            obs, r, done, truncated, info = env.step(np.zeros(4))
+            obs2, r2, done2, truncated2, info2 = env2.step(np.zeros(4))
+            # print(r, r2)
+            tot_r += r
+            tot_r2 += r2
+
+        print("tot r:", tot_r, "tot r2:", tot_r2)
+        self.assertTrue(
+            tot_r >= tot_r2,
+            f"expected reward to be higher with comfort speed, got {tot_r} < {tot_r2}",
+        )
+
+        env.close()
+
+    def test_lunar_lander_safety(self):
+        env = gymnasium.make("LunarLanderContinuous-v2", render_mode=None)
+        specs, constants, variables = get_lander_safety_only()
+        env = HPRSWrapper(env, specs=specs, constants=constants, variables=variables)
+
+        seed = 0
+        obs, info = env.reset(seed=seed)
+        done = False
+
+        while not done:
+            obs, r, done, truncated, info = env.step(np.zeros(4))
+            self.assertTrue(
+                abs(r) <= 1e-6, "expected zero reward (safety on game-over)"
+            )
 
         env.close()

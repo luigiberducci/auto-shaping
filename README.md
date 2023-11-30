@@ -11,21 +11,30 @@ Specification-based library for automatic reward shaping.
 <a href="https://github.com/psf/black"><img alt="Code style: black" src="https://img.shields.io/badge/code%20style-black-000000.svg"></a>
 </p>
 
+## :warning: Disclaimer
+This repository aims to provide a unified library for automatic reward shaping
+and reimplements the methods described in the table below.
+However, it is not meant to validate the results of the original papers. 
+
+#### If you are a reproducibility reviewer for HPRS, please refer to the [original codebase](https://github.com/edalexAguilar/reward_shaping).
+
+
 ## Methods
 
-| Method                               | Dense Signal       | Multi-Objective    | Objective Prioritization | Status                |
-|--------------------------------------|--------------------|--------------------|--------------------------|-----------------------|
-| TLTL<sup>[1]</sup>                   | :x:                | :x:                | :x:                      | :heavy_check_mark:    |
-| BHNR<sup>[2]</sup>                   | :heavy_check_mark: | :x:                | :x:                      | :heavy_check_mark:    |
-| HPRS<sup>[4]</sup>                   | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark:       | :heavy_check_mark:    |
-| PAM<sup>[4]</sup>                    | :x:                | :heavy_check_mark: | :heavy_check_mark:       | :construction_worker: |
-| Rank-Preserving Reward<sup>[5]</sup> | :x:                | :heavy_check_mark: | :heavy_check_mark:       | :construction_worker: |
+| Method                               | Signal Soundness   | Dense Signal       | Multi-Objective    | Objective Prioritization | Status                |
+|--------------------------------------|--------------------|--------------------|--------------------|--------------------------|-----------------------|
+| TLTL<sup>[1]</sup>                   | :heavy_check_mark: | :x:                | :x:                | :x:                      | :heavy_check_mark:    |
+| BHNR<sup>[2]</sup>                   | :x:                | :heavy_check_mark: | :x:                | :x:                      | :heavy_check_mark:    |
+| HPRS<sup>[4]</sup>                   | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark:       | :heavy_check_mark:    |
+| PAM<sup>[4]</sup>                    | :heavy_check_mark: | :x:                | :heavy_check_mark: | :heavy_check_mark:       | :construction_worker: |
+| Rank-Preserving Reward<sup>[5]</sup> | :heavy_check_mark: | :x:                | :heavy_check_mark: | :heavy_check_mark:       | :construction_worker: |
 
 :heavy_check_mark: Supported
 
 :x: Not supported
 
 :construction_worker: Work in progress
+
 
 ## Specification Language
 
