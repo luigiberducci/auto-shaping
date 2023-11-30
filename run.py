@@ -19,7 +19,7 @@ REWARDS = ["default", "TLTL", "BHNR", "HPRS"]
 
 
 def load_hparams(file: str):
-    assert pathlib.Path(file).exists(), f"file {file} does not exist"
+    assert pathlib.Path(file).exists(), f"file {file} does not exist, pwd: {pathlib.Path('.').absolute()}"
 
     with open(file, "r") as f:
         hparams = yaml.load(f, Loader=yaml.FullLoader)
@@ -98,7 +98,6 @@ def main(args):
     callbacks.append(video_callback)
 
     # set up model
-
     if args.hparams_file is not None:
         hparams = load_hparams(args.hparams_file)
     else:
