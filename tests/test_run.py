@@ -8,9 +8,9 @@ import run
 
 
 class TestRunScript(unittest.TestCase):
-    _cpole_hparams_file = "../examples/hparams/ppo-CartPole-v1.yaml"
-    _bw_hparams_file = "../examples/hparams/sac-BipedalWalker-v3.yaml"
-    _ll_hparams_file = "../examples/hparams/sac-LunarLanderContinuous-v2.yaml"
+    _cpole_hparams_file = "examples/hparams/ppo-CartPole-v1.yaml"
+    _bw_hparams_file = "examples/hparams/sac-BipedalWalker-v3.yaml"
+    _ll_hparams_file = "examples/hparams/sac-LunarLanderContinuous-v2.yaml"
 
     def _quick_test(self, **kwargs):
         if pathlib.Path("tmp-logs").exists():
