@@ -1,4 +1,4 @@
-from shaping import Variable, Constant
+from auto_shaping import Variable, Constant
 
 
 def get_cartpole_spec_within_xlim():

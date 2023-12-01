@@ -2,14 +2,14 @@ import warnings
 
 import gymnasium
 
-from shaping.utils.collection_wrapper import CollectionWrapper
-from shaping.spec.reward_spec import RewardSpec, Variable, Constant
-from shaping.utils.utils import monitor_stl_episode, extend_state
+from auto_shaping.utils.collection_wrapper import CollectionWrapper
+from auto_shaping.spec.reward_spec import RewardSpec, Variable, Constant
+from auto_shaping.utils.utils import monitor_stl_episode, extend_state
 
 
 class TLTLWrapper(CollectionWrapper):
     """
-    Robustness-based reward shaping from:
+    Robustness-based reward auto_shaping from:
     "Reinforcement Learning With Temporal Logic Rewards" by Li, Vasile, and Belta (2016)
     https://arxiv.org/abs/1612.03471
     """

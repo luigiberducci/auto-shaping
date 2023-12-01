@@ -3,7 +3,7 @@ import unittest
 
 import numpy as np
 
-from shaping.utils import monitor_stl_episode
+from auto_shaping.utils import monitor_stl_episode
 
 
 class TestRTAMTUtils(unittest.TestCase):
@@ -90,7 +90,7 @@ class TestRTAMTUtils(unittest.TestCase):
 class TestWrappers(unittest.TestCase):
     def test_dict_wrapper(self):
         import gymnasium
-        from shaping.utils.dictionary_wrapper import DictWrapper
+        from auto_shaping.utils.dictionary_wrapper import DictWrapper
 
         env = gymnasium.make("CartPole-v1", render_mode=None)
         env = DictWrapper(env, variables=["x", "x_dot", "theta", "theta_dot"])
@@ -119,7 +119,7 @@ class TestWrappers(unittest.TestCase):
 
 class TestRewardTypes(unittest.TestCase):
     def test_enum_types(self):
-        from shaping import RewardType
+        from auto_shaping import RewardType
 
         reward_types = ["TLTL", "BHNR", "HPRS", "PAM", "RPR"]
 

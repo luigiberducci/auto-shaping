@@ -4,7 +4,7 @@ import gymnasium
 import rtamt
 import numpy as np
 
-from shaping.spec.reward_spec import RewardSpec
+from auto_shaping.spec.reward_spec import RewardSpec
 
 
 def monitor_stl_episode(

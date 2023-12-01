@@ -3,9 +3,9 @@ from typing import Union
 import gymnasium
 import numpy as np
 
-from shaping import RewardSpec
-from shaping.spec.reward_spec import Variable, Constant
-from shaping.utils.utils import clip_and_norm, extend_state
+from auto_shaping import RewardSpec
+from auto_shaping.spec.reward_spec import Variable, Constant
+from auto_shaping.utils.utils import clip_and_norm, extend_state
 
 _cmp_lambdas = {
     "<": lambda x, y: x < y,
@@ -126,7 +126,7 @@ class HPRSWrapper(SparseSuccessRewardWrapper):
         if done:
             return base_reward
 
-        # hierarchical shaping
+        # hierarchical auto_shaping
         safety_shaping = self._gamma * self._safety_shaping(
             next_state
         ) - self._safety_shaping(state)

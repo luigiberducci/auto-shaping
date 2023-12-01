@@ -4,8 +4,8 @@ import unittest
 import gymnasium
 import numpy as np
 
-from shaping.hprs_shaping import HPRSWrapper
-from shaping.utils.utils import extend_state
+from auto_shaping.hprs_shaping import HPRSWrapper
+from auto_shaping.utils.utils import extend_state
 from tests.utility_functions import (
     get_cartpole_example1_spec,
     get_cartpole_example2_spec,

@@ -4,10 +4,10 @@ from typing import Union
 
 import gymnasium
 
-from shaping.bhnr_shaping import BHNRWrapper
-from shaping.spec.reward_spec import RewardSpec, Variable, Constant
-from shaping.tltl_shaping import TLTLWrapper
-from shaping.hprs_shaping import HPRSWrapper
+from auto_shaping.bhnr_shaping import BHNRWrapper
+from auto_shaping.spec.reward_spec import RewardSpec, Variable, Constant
+from auto_shaping.tltl_shaping import TLTLWrapper
+from auto_shaping.hprs_shaping import HPRSWrapper
 
 __entry_points__ = {
     "TLTL": TLTLWrapper,
@@ -38,10 +38,10 @@ def wrap(
     env_kwargs: dict = None,
 ):
     """
-    Wrap an environment with a reward shaping wrapper.
+    Wrap an environment with a reward auto_shaping wrapper.
 
     :param env: the environment to wrap or its name if it is a registered environment
-    :param reward: the reward shaping type
+    :param reward: the reward auto_shaping type
     :param spec: the reward specification or the path to the yaml file, or None if registered environment with configs
     """
     if spec is None:

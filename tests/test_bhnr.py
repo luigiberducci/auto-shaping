@@ -1,6 +1,6 @@
 import unittest
 
-from shaping.bhnr_shaping import BHNRWrapper
+from auto_shaping.bhnr_shaping import BHNRWrapper
 from tests.utility_functions import (
     get_cartpole_example2_spec,
     get_cartpole_example1_spec,

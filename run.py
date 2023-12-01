@@ -10,7 +10,7 @@ from stable_baselines3.common.monitor import Monitor
 from stable_baselines3.common.utils import set_random_seed
 from wandb.integration.sb3 import WandbCallback
 
-import shaping
+import auto_shaping
 from training.schedules import linear_schedule
 from training.video_recorder_cb import VideoRecorderCallback
 
@@ -68,7 +68,7 @@ def main(args):
     set_random_seed(seed)
 
     env_kwargs = {"render_mode": "rgb_array"}
-    train_env = shaping.wrap(
+    train_env = auto_shaping.wrap(
         env=args.env_id,
         reward=args.train_reward,
         spec=args.spec_file,
@@ -76,7 +76,7 @@ def main(args):
     )
     train_env = FlattenObservation(train_env)
 
-    eval_env = shaping.wrap(
+    eval_env = auto_shaping.wrap(
         env=args.env_id,
         reward=args.eval_reward,
         spec=args.spec_file,
@@ -122,7 +122,7 @@ def main(args):
 if __name__ == "__main__":
     import argparse
 
-    parser = argparse.ArgumentParser(description="Run a reward shaping experiment.")
+    parser = argparse.ArgumentParser(description="Run a reward auto_shaping experiment.")
 
     parser.add_argument(
         "--env-id",
@@ -142,14 +142,14 @@ if __name__ == "__main__":
         type=str,
         default="default",
         choices=REWARDS,
-        help="The reward shaping to use.",
+        help="The reward auto_shaping to use.",
     )
     parser.add_argument(
         "--eval-reward",
         type=str,
         default="default",
         choices=REWARDS,
-        help="The reward shaping to use.",
+        help="The reward auto_shaping to use.",
     )
 
     parser.add_argument("--seed", type=int, default=0, help="The random seed to use.")

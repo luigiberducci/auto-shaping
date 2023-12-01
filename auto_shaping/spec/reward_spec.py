@@ -5,7 +5,7 @@ from typing import List, Tuple, Union
 
 from lark import Lark
 
-from shaping.parser.transformer import RewardShapingTransformer
+from auto_shaping.parser.transformer import RewardShapingTransformer
 
 Variable = namedtuple(
     "Variable", ["name", "fn", "min", "max", "description"], defaults=[None] * 5

@@ -3,8 +3,8 @@ from gymnasium.wrappers import FlattenObservation
 
 from stable_baselines3 import A2C
 
-from shaping import Variable
-from shaping.tltl_shaping import TLTLWrapper
+from auto_shaping import Variable
+from auto_shaping.tltl_shaping import TLTLWrapper
 
 RENDER = False  # Set to True to render the environment after training
 

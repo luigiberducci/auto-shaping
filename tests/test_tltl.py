@@ -1,6 +1,6 @@
 import unittest
 
-from shaping.tltl_shaping import TLTLWrapper
+from auto_shaping.tltl_shaping import TLTLWrapper
 from tests.utility_functions import (
     get_cartpole_spec_within_xlim,
     get_cartpole_example1_spec,

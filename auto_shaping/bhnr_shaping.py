@@ -2,9 +2,9 @@ import warnings
 
 import gymnasium
 
-from shaping.utils.collection_wrapper import CollectionWrapper
-from shaping.spec.reward_spec import RewardSpec, Variable, Constant
-from shaping.utils.utils import (
+from auto_shaping.utils.collection_wrapper import CollectionWrapper
+from auto_shaping.spec.reward_spec import RewardSpec, Variable, Constant
+from auto_shaping.utils.utils import (
     monitor_stl_episode,
     monitor_filtering_stl_episode,
     extend_state,
@@ -13,7 +13,7 @@ from shaping.utils.utils import (
 
 class BHNRWrapper(CollectionWrapper):
     """
-    Robustness-based reward shaping from:
+    Robustness-based reward auto_shaping from:
     "Structured Reward Shaping using Signal Temporal Logic specification" by Balakrishnan, and Deshmukh (2019)
     https://ieeexplore.ieee.org/document/8968254
     """

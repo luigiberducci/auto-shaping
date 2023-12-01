@@ -1,12 +1,12 @@
 import unittest
 
-from shaping.spec.reward_spec import Variable, Constant
+from auto_shaping.spec.reward_spec import Variable, Constant
 
 
 class TestRewardSpec(unittest.TestCase):
     def test_constants(self):
         import gymnasium
-        from shaping import RewardSpec
+        from auto_shaping import RewardSpec
 
         env = gymnasium.make("CartPole-v1")
 
