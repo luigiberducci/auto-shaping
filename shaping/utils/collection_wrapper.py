@@ -44,7 +44,7 @@ class CollectionWrapper(gymnasium.Wrapper, gymnasium.utils.RecordConstructorArgs
             self._time = 0.0
 
         # collect observable variables from the state
-        action0=np.zeros_like(self.action_space.sample())
+        action0 = np.zeros_like(self.action_space.sample())
         obs = self._extractor_fn(state, action0) if self._extractor_fn else state
         for key in self._variables:
             self._episode[key].append(obs[key])

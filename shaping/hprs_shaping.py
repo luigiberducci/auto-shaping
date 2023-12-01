@@ -62,7 +62,9 @@ class SparseSuccessRewardWrapper(gymnasium.Wrapper):
 
     def step(self, action):
         next_obs, _, done, truncated, info = super().step(action)
-        ext_state = extend_state(env=self, state=next_obs, action=action, spec=self._spec)
+        ext_state = extend_state(
+            env=self, state=next_obs, action=action, spec=self._spec
+        )
         reward = self._reward(None, action, ext_state, done, info)
         return next_obs, reward, done, truncated, info
 
@@ -110,7 +112,9 @@ class HPRSWrapper(SparseSuccessRewardWrapper):
 
     def step(self, action):
         next_obs, _, done, truncated, info = super().step(action)
-        ext_next_obs = extend_state(env=self, state=next_obs, action=action, spec=self._spec)
+        ext_next_obs = extend_state(
+            env=self, state=next_obs, action=action, spec=self._spec
+        )
         reward = self._hprs_reward(self._obs, action, ext_next_obs, done, info)
         self._obs = ext_next_obs
         return next_obs, reward, done, truncated, info

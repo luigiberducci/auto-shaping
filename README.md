@@ -7,7 +7,7 @@ Specification-based library for automatic reward shaping.
 <p align="center">
 <a href="https://opensource.org/licenses/MIT"><img alt="License" src="https://img.shields.io/badge/License-MIT-yellow.svg"></a>
 <a href="https://python.org"><img alt="Python 3.10" src="https://img.shields.io/badge/python-3.10-blue.svg"></a>
-<!--<a href="https://github.com/luigiberducci/auto-shaping/actions/workflows/run-unit-tests-on-pr.yml/badge.svg"><img alt="Workflow Status" src="https://github.com/luigiberducci/auto-shaping/actions/workflows/run-unit-tests-on-pr.yml/badge.svg"></a>-->
+<a href="https://github.com/luigiberducci/auto-shaping/actions/workflows/tests-on-pr.yml/badge.svg"><img alt="Workflow Status" src="https://github.com/luigiberducci/auto-shaping/actions/workflows/tests-on-pr.yml/badge.svg"></a>
 <a href="https://github.com/psf/black"><img alt="Code style: black" src="https://img.shields.io/badge/code%20style-black-000000.svg"></a>
 </p>
 

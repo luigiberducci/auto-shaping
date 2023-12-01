@@ -81,7 +81,9 @@ def clip_and_norm(v: float, minv: float, maxv: float) -> float:
     return (v - minv) / (maxv - minv)
 
 
-def extend_state(env: gymnasium.Env, state: dict, action: np.ndarray, spec: RewardSpec) -> dict:
+def extend_state(
+    env: gymnasium.Env, state: dict, action: np.ndarray, spec: RewardSpec
+) -> dict:
     """
     Given a state and a reward specification, return an extended state with all the constants and variables.
     """

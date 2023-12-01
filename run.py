@@ -19,7 +19,9 @@ REWARDS = ["default", "TLTL", "BHNR", "HPRS"]
 
 
 def load_hparams(file: str):
-    assert pathlib.Path(file).exists(), f"file {file} does not exist, pwd: {pathlib.Path('.').absolute()}"
+    assert pathlib.Path(
+        file
+    ).exists(), f"file {file} does not exist, pwd: {pathlib.Path('.').absolute()}"
 
     with open(file, "r") as f:
         hparams = yaml.load(f, Loader=yaml.FullLoader)

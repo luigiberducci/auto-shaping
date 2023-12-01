@@ -45,7 +45,9 @@ class BHNRWrapper(CollectionWrapper):
             var for var in self._spec.constants
         ]
 
-        extractor_fn = lambda state, action: extend_state(env=env, state=state, action=action, spec=self._spec)
+        extractor_fn = lambda state, action: extend_state(
+            env=env, state=state, action=action, spec=self._spec
+        )
         super(BHNRWrapper, self).__init__(
             env,
             extractor_fn=extractor_fn,
