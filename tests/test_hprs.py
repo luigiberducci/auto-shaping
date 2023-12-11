@@ -250,3 +250,23 @@ class TestHPRS(unittest.TestCase):
             )
 
         env.close()
+
+    def test_lunar_lander_heuristic(self):
+        import auto_shaping
+        from gymnasium.envs.box2d.lunar_lander import heuristic
+
+        env = auto_shaping.wrap(env="LunarLanderContinuous-v2", reward="HPRS", env_kwargs={"render_mode": "human"})
+
+        seed = 0
+        obs, info = env.reset(seed=seed)
+        done = False
+
+        tot_r = 0.0
+        while not done:
+            action = heuristic(env, s=obs)
+            obs, r, done, truncated, info = env.step(action)
+            tot_r += r
+
+        self.assertTrue(tot_r > 45.0, "expected tot hprs reward of heuristic agent to be > 45.0")
+
+        env.close()

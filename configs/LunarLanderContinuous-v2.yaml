@@ -1,10 +1,10 @@
 specs:
   - 'ensure abs "x" <= "x_limit"'
   - 'ensure "collision" <= 0.0'
-  - 'conquer "dist" <= 0.0'
+  - 'conquer "dist_to_land" <= 0.0'
   - 'encourage abs "theta" <= "theta_comfort"'
   - 'encourage abs "theta_dot" <= "theta_dot_comfort"'
-  - 'encourage "motors" <= 0.0'
+
 
 constants:
   - name: x_limit
@@ -34,6 +34,11 @@ variables:
     min: -1.0
     max: 1.0
     description: "binary collision indicator"
+  - name: remaining_legs
+    fn: "((1.0 - state[6]) + (1.0 - state[7])) / 2"
+    min: 0.0
+    max: 1.0
+    description: "continuous indicator of legs contact with the ground"
   - name: dist_x
     fn: "abs(x) - half_landing_pad"
     min: 0.0
@@ -42,10 +47,11 @@ variables:
     fn: "state[1] - landing_height"
     min: 0.0
     max: 1.5
-  - name: "dist"
-    fn: "max(dist_x, dist_y)"
+  - name: "dist_to_land"
+    fn: "remaining_legs + max(dist_x, dist_y)"
     min: 0.0
-    max: 1.5
+    max: 2.5
+    description: "distance to the landing, intended to be minimized"
   - name: "theta"
     fn: "state[4]"
     min: 0.0  # abs ang is norm within 0.0 and pi
@@ -56,8 +62,3 @@ variables:
     min: 0.0  # abs ang vel is norm within 0.0 and 1.0
     max: 1.0
     description: "angular velocity of the lander"
-  - name: "motors"
-    fn: "np.linalg.norm(action)"
-    min: 0.0
-    max: 1.0
-    description: "motor power as norm of action"
