@@ -267,6 +267,8 @@ class TestHPRS(unittest.TestCase):
             obs, r, done, truncated, info = env.step(action)
             tot_r += r
 
-        self.assertTrue(tot_r > 45.0, "expected tot hprs reward of heuristic agent to be > 45.0")
+        self.assertTrue(
+            tot_r > 45.0, "expected tot hprs reward of heuristic agent to be > 45.0"
+        )
 
         env.close()

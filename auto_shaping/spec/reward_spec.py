@@ -121,9 +121,7 @@ class RewardSpec:
                 check_const(const.name, const.value, const.description)
 
                 self._constants[const.name] = const
-                transformer.add_constant(
-                    name=const.name, value=const.value
-                )
+                transformer.add_constant(name=const.name, value=const.value)
 
         # important to do this after constants are set
         self._specs = [RequirementSpec(sp, transformer=transformer) for sp in specs]
