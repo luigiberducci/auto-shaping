@@ -1,3 +1,4 @@
+from __future__ import annotations
 import logging
 import pathlib
 from collections import namedtuple
@@ -65,6 +66,9 @@ class PredicateSpec:
         spec = f"{var_str} {cmp_op} {threshold_value}"
 
         return spec
+
+    def to_tuple(self) -> tuple[tuple[callable | None, str], str, float]:
+        return self._variable, self._operator, self._value
 
 
 class RequirementSpec:
