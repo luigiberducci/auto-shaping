@@ -10,7 +10,6 @@ from auto_shaping.spec.reward_spec import RewardSpec
 def monitor_stl_episode(
     stl_spec: str, vars: List[str], episode: Dict[str, Any], types: List[str] = None
 ):
-
     assert type(episode) == dict, f"episode must be a dict, got {type(episode)}"
 
     if types is None:

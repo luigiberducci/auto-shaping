@@ -21,7 +21,11 @@ class TLTLWrapper(CollectionWrapper):
         variables: list[Variable],
         constants: list[Constant] = None,
     ):
-        self._spec = RewardSpec(specs=specs, variables=variables, constants=constants,)
+        self._spec = RewardSpec(
+            specs=specs,
+            variables=variables,
+            constants=constants,
+        )
 
         reqs = []
         for req_spec in self._spec.specs:
@@ -41,7 +45,9 @@ class TLTLWrapper(CollectionWrapper):
             env=env, state=state, action=action, spec=self._spec
         )
         super(TLTLWrapper, self).__init__(
-            env, extractor_fn=extractor_fn, variables=self._variables,
+            env,
+            extractor_fn=extractor_fn,
+            variables=self._variables,
         )
 
     def _reward(self, obs, done, info):
@@ -49,7 +55,9 @@ class TLTLWrapper(CollectionWrapper):
 
         if done:
             robustness_trace = monitor_stl_episode(
-                self._stl_spec, self._variables, self._episode,
+                self._stl_spec,
+                self._variables,
+                self._episode,
             )
             reward = robustness_trace[0][1]
 

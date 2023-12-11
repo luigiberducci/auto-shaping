@@ -77,7 +77,11 @@ class HPRSWrapper(SparseSuccessRewardWrapper):
         gamma: float = 1.0,
     ):
         gymnasium.utils.RecordConstructorArgs.__init__(
-            self, specs=specs, variables=variables, constants=constants, gamma=gamma,
+            self,
+            specs=specs,
+            variables=variables,
+            constants=constants,
+            gamma=gamma,
         )
         super(HPRSWrapper, self).__init__(env, specs, variables, constants)
 
