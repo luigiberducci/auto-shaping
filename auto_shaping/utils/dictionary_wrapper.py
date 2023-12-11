@@ -1,7 +1,7 @@
 from typing import Callable, Any
 
 import gymnasium
-from gymnasium.core import ObsType, WrapperObsType
+from gymnasium.core import ObsType
 
 
 class DictWrapper(gymnasium.Wrapper, gymnasium.utils.RecordConstructorArgs):

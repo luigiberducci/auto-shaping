@@ -2,8 +2,7 @@ from collections import deque
 from typing import List, Callable
 
 import gymnasium
-
-from shaping.utils.dictionary_wrapper import DictWrapper
+import numpy as np
 
 
 class CollectionWrapper(gymnasium.Wrapper, gymnasium.utils.RecordConstructorArgs):
@@ -27,9 +26,6 @@ class CollectionWrapper(gymnasium.Wrapper, gymnasium.utils.RecordConstructorArgs
             self, variables=variables, extractor_fn=extractor_fn, window_len=window_len,
         )
 
-        if isinstance(env.observation_space, gymnasium.spaces.Box):
-            self._env = DictWrapper(env, variables=variables, extractor_fn=extractor_fn)
-
         super(CollectionWrapper, self).__init__(env)
 
         self._variables = variables
@@ -47,20 +43,31 @@ class CollectionWrapper(gymnasium.Wrapper, gymnasium.utils.RecordConstructorArgs
             self._episode["time"] = deque(maxlen=self._window_len)
             self._time = 0.0
 
+        # collect observable variables from the state
+        action0 = np.zeros_like(self.action_space.sample())
+        obs = self._extractor_fn(state, action0) if self._extractor_fn else state
+        for key in self._variables:
+            self._episode[key].append(obs[key])
+
+        if not self._flag_time:
+            self._time += 1.0
+            self._episode["time"].append(self._time)
+
         return state, info
 
     def step(self, action):
         if self._episode is None:
             raise RuntimeError("reset() must be called before step()")
 
-        obs, reward, done, truncated, info = super().step(action)
+        state, reward, done, truncated, info = super().step(action)
 
         # collect observable variables from the state
-        for key, value in obs.items():
-            self._episode[key].append(value)
+        obs = self._extractor_fn(state, action) if self._extractor_fn else state
+        for key in self._variables:
+            self._episode[key].append(obs[key])
 
         if not self._flag_time:
             self._time += 1.0
             self._episode["time"].append(self._time)
 
-        return obs, reward, done, truncated, info
+        return state, reward, done, truncated, info

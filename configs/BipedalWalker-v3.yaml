@@ -1,0 +1,55 @@
+specs:
+  - 'achieve "x" >= "x_goal"'
+  - 'ensure "collision" <= 0.0'
+  - 'encourage "horizontal_speed" >= "horizontal_speed_target"'
+  - 'encourage abs "hull_angle" <= "hull_angle_limit"'
+  - 'encourage abs "vertical_speed" <= "vertical_speed_limit"'
+  - 'encourage abs "angular_velocity" <= "angular_velocity_limit"'
+
+constants:
+  # from bipedal_walker constants
+  - name: "x_goal"
+    value: 88.667
+  - name: "hull_angle_limit"
+    value: 0.08726
+    description: "hull angle limit which terminates the episode"
+  - name: "horizontal_speed_target"
+    value: 0.30
+    description: "target horizontal speed"
+  - name: "vertical_speed_limit"
+    value: 0.1
+    description: "vertical speed limit which terminates the episode"
+  - name: "angular_velocity_limit"
+    value: 0.25
+    description: "vertical speed limit which terminates the episode"
+
+
+variables:
+  - name: "x"
+    fn: "env.unwrapped.hull.position[0]"
+    min: 0.0
+    max: 88.667  # x_goal
+    description: "x position of the hull (unobserved but used in reward)"
+  - name: "collision"
+    fn: "float(env.unwrapped.game_over)"
+    min: 0.0
+    max: 1.0
+    description: "binary collision indicator"
+  - name: "hull_angle"
+    fn: "state[0]"
+    min: 0.0  # from env, abs hull angle is normally within 0.0 and 1.0
+    max: 1.0
+  - name: "angular_velocity"
+    fn: "state[1]"
+    min: 0.0
+    max: 1.0
+    description: ""
+  - name: "horizontal_speed"
+    fn: "state[2]"
+    min: 0.0
+    max: 1.0
+    description: ""
+  - name: "vertical_speed"
+    fn: "state[3]"
+    min: 0.0
+    max: 1.0

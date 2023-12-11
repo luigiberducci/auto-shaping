@@ -1,6 +1,7 @@
-gymnasium[classic-control]
+gymnasium[classic-control,box2d]
 pygame
 opencv-python
-rtamt
+git+https://github.com/nickovic/rtamt.git@filtering
 lark
 pyyaml
+charset-normalizer==2.1.0

@@ -1,17 +1,11 @@
-"""
-Hierarchical Potential-based Reward Shaping from:
-"Hierarchical Potential-based Reward Shaping from Task Specifications" by Berducci et al., (arxiv, 2021)
-https://arxiv.org/abs/2110.02792
-"""
-
 from typing import Union
 
 import gymnasium
 import numpy as np
 
-from shaping import RewardSpec
-from shaping.spec.reward_spec import Variable, Constant
-from shaping.utils.utils import clip_and_norm, deep_update
+from auto_shaping import RewardSpec
+from auto_shaping.spec.reward_spec import Variable, Constant
+from auto_shaping.utils.utils import clip_and_norm, extend_state
 
 _cmp_lambdas = {
     "<": lambda x, y: x < y,
@@ -22,17 +16,11 @@ _cmp_lambdas = {
     "!=": lambda x, y: (x - y) > 1e-6,
 }
 
-
-def eval_var(state, var, fn):
-    if fn == "abs":
-        val = np.abs(state[var])
-    elif fn == "exp":
-        val = np.exp(state[var])
-    elif fn is None:
-        val = state[var]
-    else:
-        raise NotImplementedError(f"Function {fn} not implemented")
-    return val
+fns = {
+    "abs": np.abs,
+    "exp": np.exp,
+    None: lambda x: x,
+}
 
 
 class SparseSuccessRewardWrapper(gymnasium.Wrapper):
@@ -44,9 +32,7 @@ class SparseSuccessRewardWrapper(gymnasium.Wrapper):
         self,
         env: gymnasium.Env,
         specs: list[str],
-        variables: list[
-            Union[Variable, tuple[str, float, float], tuple[str, float, float, str]]
-        ],
+        variables: list[Variable],
         constants: list[
             Union[Constant, tuple[str, float], tuple[str, float, str]]
         ] = None,
@@ -60,27 +46,26 @@ class SparseSuccessRewardWrapper(gymnasium.Wrapper):
             if spec._operator in ["achieve", "conquer"]
         ]
         self._variables = self._spec.variables
-
-        assert (
-            type(env.observation_space) == gymnasium.spaces.Dict
-        ), "Observation space must be a dictionary, use DictWrapper"
+        self._constants = self._spec.constants
 
     def _reward(self, state, action, next_state, done, info):
         reward = 0.0
+
         for target_spec in self._target_specs:
-            predicate = target_spec._predicate
-            fn, var = predicate._variable
-            cmp_op = predicate._operator
-            threshold = predicate._value
-            cmp_lambda = _cmp_lambdas[cmp_op]
-            val = eval_var(next_state, var, fn)
+            (fn, var_name), aritm_op, threshold = target_spec._predicate
+            cmp_lambda = _cmp_lambdas[aritm_op]
+
+            val = fns[fn](next_state[var_name])
 
             reward += float(cmp_lambda(val, threshold))
         return reward
 
     def step(self, action):
         next_obs, _, done, truncated, info = super().step(action)
-        reward = self._reward(None, action, next_obs, done, info)
+        ext_state = extend_state(
+            env=self, state=next_obs, action=action, spec=self._spec
+        )
+        reward = self._reward(None, action, ext_state, done, info)
         return next_obs, reward, done, truncated, info
 
 
@@ -89,19 +74,16 @@ class HPRSWrapper(SparseSuccessRewardWrapper):
         self,
         env: gymnasium.Env,
         specs: list[str],
-        variables: list[tuple[str, float, float]],
-        constants: list[tuple[str, float]] = None,
-        params: dict[str, float] = None,
+        variables: list[Variable],
+        constants: list[Constant] = None,
+        gamma: float = 1.0,
     ):
-        self._params = {
-            "gamma": 1.00,
-        }
-        deep_update(self._params, params or {})
-
         gymnasium.utils.RecordConstructorArgs.__init__(
-            self, specs=specs, variables=variables, constants=constants, gamma=self._params["gamma"]
+            self, specs=specs, variables=variables, constants=constants, gamma=gamma,
         )
         super(HPRSWrapper, self).__init__(env, specs, variables, constants)
+
+        self._gamma = gamma
 
         # safety, target, comfort
         self._safety_specs = [
@@ -123,12 +105,18 @@ class HPRSWrapper(SparseSuccessRewardWrapper):
         self._obs = None
 
     def reset(self, **kwargs):
-        self._obs, info = super().reset(**kwargs)
-        return self._obs, info
+        obs, info = super().reset(**kwargs)
+        action0 = np.zeros_like(self.action_space.sample())
+        self._obs = extend_state(env=self, state=obs, action=action0, spec=self._spec)
+        return obs, info
 
     def step(self, action):
         next_obs, _, done, truncated, info = super().step(action)
-        reward = self._hprs_reward(self._obs, action, next_obs, done, info)
+        ext_next_obs = extend_state(
+            env=self, state=next_obs, action=action, spec=self._spec
+        )
+        reward = self._hprs_reward(self._obs, action, ext_next_obs, done, info)
+        self._obs = ext_next_obs
         return next_obs, reward, done, truncated, info
 
     def _hprs_reward(self, state, action, next_state, done, info):
@@ -138,15 +126,14 @@ class HPRSWrapper(SparseSuccessRewardWrapper):
         if done:
             return base_reward
 
-        # hierarchical shaping
-        gamma = self._params["gamma"]
-        safety_shaping = gamma * self._safety_shaping(
+        # hierarchical auto_shaping
+        safety_shaping = self._gamma * self._safety_shaping(
             next_state
         ) - self._safety_shaping(state)
-        target_shaping = gamma * self._target_shaping(
+        target_shaping = self._gamma * self._target_shaping(
             next_state
         ) - self._target_shaping(state)
-        comfort_shaping = gamma * self._comfort_shaping(
+        comfort_shaping = self._gamma * self._comfort_shaping(
             next_state
         ) - self._comfort_shaping(state)
 
@@ -156,12 +143,9 @@ class HPRSWrapper(SparseSuccessRewardWrapper):
         reward = 0.0
 
         for spec in self._safety_specs:
-            predicate = spec._predicate
-            fn, var = predicate._variable
-            cmp_op = predicate._operator
-            threshold = predicate._value
-            cmp_lambda = _cmp_lambdas[cmp_op]
-            val = eval_var(state, var, fn)
+            (fn, var), aritm_op, threshold = spec._predicate
+            cmp_lambda = _cmp_lambdas[aritm_op]
+            val = fns[fn](state[var])
 
             reward += float(cmp_lambda(val, threshold))
 
@@ -170,31 +154,24 @@ class HPRSWrapper(SparseSuccessRewardWrapper):
     def _target_shaping(self, state) -> float:
         reward = 0.0
 
-        safety_weight = 0.0
+        safety_weight = 1.0
         for spec in self._safety_specs:
-            predicate = spec._predicate
-            fn, var = predicate._variable
-            cmp_op = predicate._operator
-            threshold = predicate._value
-            cmp_lambda = _cmp_lambdas[cmp_op]
-            val = eval_var(state, var, fn)
+            (fn, var), aritm_op, threshold = spec._predicate
+            cmp_lambda = _cmp_lambdas[aritm_op]
+            val = fns[fn](state[var])
 
             safety_weight *= float(cmp_lambda(val, threshold))
 
         for spec in self._target_spec:
-            predicate = spec._predicate
-            fn, var = predicate._variable
-            cmp_op = predicate._operator
-            threshold = predicate._value
-
-            val = eval_var(state, var, fn)
+            (fn, var), aritm_op, threshold = spec._predicate
+            val = fns[fn](state[var])
 
             minv = self._variables[var].min
             maxv = self._variables[var].max
 
-            if cmp_op in [">", ">="]:
+            if aritm_op in [">", ">="]:
                 target_reward = clip_and_norm(val, minv, threshold)
-            elif cmp_op in ["<", "<="]:
+            elif aritm_op in ["<", "<="]:
                 target_reward = 1.0 - clip_and_norm(val, threshold, maxv)
 
             reward += safety_weight * target_reward
@@ -206,46 +183,37 @@ class HPRSWrapper(SparseSuccessRewardWrapper):
 
         safety_weight = 1.0
         for spec in self._safety_specs:
-            predicate = spec._predicate
-            fn, var = predicate._variable
-            cmp_op = predicate._operator
-            threshold = predicate._value
-            cmp_lambda = _cmp_lambdas[cmp_op]
-            val = eval_var(state, var, fn)
+            (fn, var), aritm_op, threshold = spec._predicate
+            cmp_lambda = _cmp_lambdas[aritm_op]
+            val = fns[fn](state[var])
 
             safety_weight *= float(cmp_lambda(val, threshold))
 
         target_weight = 1.0
         for spec in self._target_spec:
-            predicate = spec._predicate
-            fn, var = predicate._variable
-            cmp_op = predicate._operator
-            threshold = predicate._value
-            val = eval_var(state, var, fn)
+            (fn, var), aritm_op, threshold = spec._predicate
+            val = fns[fn](state[var])
 
             minv = self._variables[var].min
             maxv = self._variables[var].max
 
-            if cmp_op in [">", ">="]:
+            if aritm_op in [">", ">="]:
                 target_reward = clip_and_norm(val, minv, threshold)
-            elif cmp_op in ["<", "<="]:
+            elif aritm_op in ["<", "<="]:
                 target_reward = 1.0 - clip_and_norm(val, threshold, maxv)
 
             target_weight *= target_reward
 
         for spec in self._comfort_specs:
-            predicate = spec._predicate
-            fn, var = predicate._variable
-            cmp_op = predicate._operator
-            threshold = predicate._value
-            val = eval_var(state, var, fn)
+            (fn, var), aritm_op, threshold = spec._predicate
+            val = fns[fn](state[var])
 
             minv = self._variables[var].min
             maxv = self._variables[var].max
 
-            if cmp_op in [">", ">="]:
+            if aritm_op in [">", ">="]:
                 comfort_reward = clip_and_norm(val, minv, threshold)
-            elif cmp_op in ["<", "<="]:
+            elif aritm_op in ["<", "<="]:
                 comfort_reward = 1.0 - clip_and_norm(val, threshold, maxv)
 
             reward += safety_weight * target_weight * comfort_reward

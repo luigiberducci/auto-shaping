@@ -1,2 +1,4 @@
 stable-baselines3[extra]
 tensorboard
+wandb
+moviepy

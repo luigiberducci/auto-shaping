@@ -1,9 +1,9 @@
+import os
 import unittest
 
 import numpy as np
 
-from shaping.utils import monitor_stl_episode
-from shaping.utils.dictionary_wrapper import DictWrapper
+from auto_shaping.utils import monitor_stl_episode
 
 
 class TestRTAMTUtils(unittest.TestCase):
@@ -11,7 +11,8 @@ class TestRTAMTUtils(unittest.TestCase):
         import rtamt
         import pandas as pd
 
-        data1 = pd.read_csv("example1.csv", delimiter=",", header=0)
+        test_dir = os.path.dirname(os.path.abspath(__file__))
+        data1 = pd.read_csv(f"{test_dir}/example1.csv", delimiter=",", header=0)
 
         # from original example
         spec = rtamt.StlDiscreteTimeSpecification(semantics=rtamt.Semantics.STANDARD)
@@ -51,7 +52,8 @@ class TestRTAMTUtils(unittest.TestCase):
         import rtamt
         import pandas as pd
 
-        data1 = pd.read_csv("example1.csv", delimiter=",", header=0)
+        test_dir = os.path.dirname(os.path.abspath(__file__))
+        data1 = pd.read_csv(f"{test_dir}/example1.csv", delimiter=",", header=0)
 
         # from original example
         spec = rtamt.StlDiscreteTimeSpecification(semantics=rtamt.Semantics.STANDARD)
@@ -88,8 +90,9 @@ class TestRTAMTUtils(unittest.TestCase):
 class TestWrappers(unittest.TestCase):
     def test_dict_wrapper(self):
         import gymnasium
+        from auto_shaping.utils.dictionary_wrapper import DictWrapper
 
-        env = gymnasium.make("CartPole-v1", render_mode="human")
+        env = gymnasium.make("CartPole-v1", render_mode=None)
         env = DictWrapper(env, variables=["x", "x_dot", "theta", "theta_dot"])
 
         self.assertTrue(
@@ -116,7 +119,7 @@ class TestWrappers(unittest.TestCase):
 
 class TestRewardTypes(unittest.TestCase):
     def test_enum_types(self):
-        from shaping import RewardType
+        from auto_shaping import RewardType
 
         reward_types = ["TLTL", "BHNR", "HPRS", "PAM", "RPR"]
 

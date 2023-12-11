@@ -2,7 +2,7 @@ import os
 import pathlib
 from lark import Lark
 
-from shaping.parser.transformer import RewardShapingTransformer
+from auto_shaping.parser.transformer import RewardShapingTransformer
 
 # load grammar
 wd = pathlib.Path(os.path.dirname(os.path.realpath(__file__)))

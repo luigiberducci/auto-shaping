@@ -1,0 +1,63 @@
+specs:
+  - 'ensure abs "x" <= "x_limit"'
+  - 'ensure "collision" <= 0.0'
+  - 'conquer "dist" <= 0.0'
+  - 'encourage abs "theta" <= "theta_comfort"'
+  - 'encourage abs "theta_dot" <= "theta_dot_comfort"'
+  - 'encourage "motors" <= 0.0'
+
+constants:
+  - name: x_limit
+    value: 1.0
+    description: "normalized world limit"
+  - name: half_landing_pad
+    value: 0.15
+    description: "half width of the landing pad"
+  - name: landing_height
+    value: 0.05
+    description: "height of the landing pad"
+  - name: theta_comfort
+    value: 1.0472 # pi/3
+    description: "angle limit which determines a comfortable inclination"
+  - name: theta_dot_comfort
+    value: 0.5
+    description: "angular velocity limit which determines a comfortable fly"
+
+variables:
+  - name: x
+    fn: "state[0]"
+    min: -1.5
+    max: 1.5
+    description: "x position of the lander"
+  - name: collision
+    fn: "float(env.unwrapped.game_over)"
+    min: -1.0
+    max: 1.0
+    description: "binary collision indicator"
+  - name: dist_x
+    fn: "abs(x) - half_landing_pad"
+    min: 0.0
+    max: 1.5
+  - name: "dist_y"
+    fn: "state[1] - landing_height"
+    min: 0.0
+    max: 1.5
+  - name: "dist"
+    fn: "max(dist_x, dist_y)"
+    min: 0.0
+    max: 1.5
+  - name: "theta"
+    fn: "state[4]"
+    min: 0.0  # abs ang is norm within 0.0 and pi
+    max: 3.1416
+    description: "angle of the lander"
+  - name: "theta_dot"
+    fn: "state[5]"
+    min: 0.0  # abs ang vel is norm within 0.0 and 1.0
+    max: 1.0
+    description: "angular velocity of the lander"
+  - name: "motors"
+    fn: "np.linalg.norm(action)"
+    min: 0.0
+    max: 1.0
+    description: "motor power as norm of action"
