@@ -8,10 +8,15 @@ import warnings
 import gymnasium
 import numpy as np
 
-from shaping.spec.reward_spec import RewardSpec
-from shaping.utils import monitor_stl_episode
-from shaping.utils.collection_wrapper import CollectionWrapper
-from shaping.utils.utils import deep_update, sigmoid
+from auto_shaping.spec.reward_spec import RewardSpec
+from auto_shaping.utils import monitor_stl_episode
+from auto_shaping.utils.collection_wrapper import CollectionWrapper
+
+from auto_shaping import Variable, Constant
+
+
+def sigmoid(x):
+    return 1.0 / (1.0 + np.exp(-x))
 
 
 class RPRWrapper(CollectionWrapper):
@@ -19,8 +24,8 @@ class RPRWrapper(CollectionWrapper):
         self,
         env: gymnasium.Env,
         specs: list[str],
-        variables: list[tuple[str, float, float]],
-        constants: list[tuple[str, float]] = None,
+        variables: list[Variable],
+        constants: list[Constant] = None,
         params: dict = None,
     ):
         self._params = {
@@ -28,7 +33,7 @@ class RPRWrapper(CollectionWrapper):
             "scaling_coeff": 1.0,
             "max_length": None,
         }
-        deep_update(self._params, params or {})
+        self._params.update(params or {})
 
         var_names = [var[0] for var in variables]
         super().__init__(env, variables=var_names)
@@ -65,11 +70,13 @@ class RPRWrapper(CollectionWrapper):
         reward = 0.0
 
         if done:
-            joint_safety_spec = " and ".join([f"({spec})"for spec in self._stl_safety_specs])
+            joint_safety_spec = " and ".join(
+                [f"({spec})" for spec in self._stl_safety_specs]
+            )
             joint_target_spec = " and ".join(self._stl_target_specs)
 
             rhos = []
-            c = self._params["scaling_coeff"]   # scaling coefficient
+            c = self._params["scaling_coeff"]  # scaling coefficient
             for stl_spec in [joint_safety_spec, joint_target_spec]:
                 if stl_spec == "":  # skip if no safety/target specs
                     continue
@@ -103,8 +110,10 @@ class RPRWrapper(CollectionWrapper):
             # we compute rank-preserving reward as in Eq. 6 of the paper
             a, c = self._params["base_coeff"], self._params["scaling_coeff"]
             n = len(rhos)
-            exp_coeff = [a ** (n - i + 1) for i in range(1, n + 1) if rhos[i - 1] is not None]
-            norm_rhos = [sigmoid(c * r) + 1/n * r for r in rhos if r is not None]
+            exp_coeff = [
+                a ** (n - i + 1) for i in range(1, n + 1) if rhos[i - 1] is not None
+            ]
+            norm_rhos = [sigmoid(c * r) + 1 / n * r for r in rhos if r is not None]
             reward = np.dot(exp_coeff, norm_rhos)
 
         return reward

@@ -4,15 +4,13 @@ Policy-Assessment Metric from:
 https://arxiv.org/abs/2110.02792
 """
 import warnings
-from typing import Union
 
 import gymnasium
 import numpy as np
 
-from shaping.spec.reward_spec import Variable, Constant, RewardSpec
-from shaping.utils import monitor_stl_episode
-from shaping.utils.collection_wrapper import CollectionWrapper
-from shaping.utils.utils import deep_update
+from auto_shaping.spec.reward_spec import Variable, Constant, RewardSpec
+from auto_shaping.utils import monitor_stl_episode
+from auto_shaping.utils.collection_wrapper import CollectionWrapper
 
 
 class PAMWrapper(CollectionWrapper):
@@ -20,14 +18,14 @@ class PAMWrapper(CollectionWrapper):
         self,
         env: gymnasium.Env,
         specs: list[str],
-        variables: list[tuple[str, float, float]],
-        constants: list[tuple[str, float]] = None,
+        variables: list[Variable],
+        constants: list[Constant] = None,
         params: dict = None,
     ):
         self._params = {
             "max_length": None,
         }
-        deep_update(self._params, params or {})
+        self._params.update(params or {})
 
         var_names = [var[0] for var in variables]
         super().__init__(env, variables=var_names)
