@@ -42,18 +42,17 @@ def check_const(name, value, description=None):
 
 class RequirementSpec:
     grammar_path = pathlib.Path(__file__).parent.parent / "parser" / "grammar.txt"
-    transformer = RewardShapingTransformer()
-    parser = None
 
-    def __init__(self, spec: str):
-        if self.parser is None:
-            with open(self.grammar_path, "r") as f:
-                grammar = f.read()
-                self.parser = Lark(
-                    grammar, start="start", parser="lalr", transformer=self.transformer
-                )
+    def __init__(self, spec: str, transformer: RewardShapingTransformer = None):
+        self.transformer = transformer or RewardShapingTransformer()
 
-            logging.debug(f"Loaded grammar from {self.grammar_path}")
+        with open(self.grammar_path, "r") as f:
+            grammar = f.read()
+            self.parser = Lark(
+                grammar, start="start", parser="lalr", transformer=self.transformer
+            )
+
+        logging.debug(f"Loaded grammar from {self.grammar_path}")
 
         tree = self.parser.parse(spec)
         self._spec = spec
@@ -102,6 +101,8 @@ class RewardSpec:
         assert len(specs) > 0, "At least one specification must be provided"
         assert len(variables) > 0, "At least one variable must be provided"
 
+        transformer = RewardShapingTransformer()
+
         self._variables = {}
         for var in variables:
             assert isinstance(
@@ -120,12 +121,12 @@ class RewardSpec:
                 check_const(const.name, const.value, const.description)
 
                 self._constants[const.name] = const
-                RequirementSpec.transformer.add_constant(
+                transformer.add_constant(
                     name=const.name, value=const.value
                 )
 
         # important to do this after constants are set
-        self._specs = [RequirementSpec(sp) for sp in specs]
+        self._specs = [RequirementSpec(sp, transformer=transformer) for sp in specs]
 
     @property
     def specs(self) -> List[RequirementSpec]:

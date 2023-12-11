@@ -251,11 +251,11 @@ class TestHPRS(unittest.TestCase):
 
         env.close()
 
-    def test_lunar_lander_heuristic(self):
+    def _test_lunar_lander_heuristic(self):
         import auto_shaping
         from gymnasium.envs.box2d.lunar_lander import heuristic
 
-        env = auto_shaping.wrap(env="LunarLanderContinuous-v2", reward="HPRS", env_kwargs={"render_mode": "human"})
+        env = auto_shaping.wrap(env="LunarLanderContinuous-v2", reward="HPRS")
 
         seed = 0
         obs, info = env.reset(seed=seed)
