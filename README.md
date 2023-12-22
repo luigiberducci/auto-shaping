@@ -21,13 +21,13 @@ However, it is not meant to validate the results of the original papers.
 
 ## Methods
 
-| Method                               | Signal Soundness   | Dense Signal       | Multi-Objective    | Objective Prioritization | Status                |
-|--------------------------------------|--------------------|--------------------|--------------------|--------------------------|-----------------------|
-| TLTL<sup>[1]</sup>                   | :heavy_check_mark: | :x:                | :x:                | :x:                      | :heavy_check_mark:    |
-| BHNR<sup>[2]</sup>                   | :x:                | :heavy_check_mark: | :x:                | :x:                      | :heavy_check_mark:    |
-| HPRS<sup>[4]</sup>                   | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark:       | :heavy_check_mark:    |
-| PAM<sup>[4]</sup>                    | :heavy_check_mark: | :x:                | :heavy_check_mark: | :heavy_check_mark:       | :construction_worker: |
-| Rank-Preserving Reward<sup>[5]</sup> | :heavy_check_mark: | :x:                | :heavy_check_mark: | :heavy_check_mark:       | :construction_worker: |
+| Method                               | Signal Soundness   | Dense Signal       | Multi-Objective    | Objective Prioritization | Status               |
+|--------------------------------------|--------------------|--------------------|--------------------|--------------------------|----------------------|
+| TLTL<sup>[1]</sup>                   | :heavy_check_mark: | :x:                | :x:                | :x:                      | :heavy_check_mark:   |
+| BHNR<sup>[2]</sup>                   | :x:                | :heavy_check_mark: | :x:                | :x:                      | :heavy_check_mark:   |
+| HPRS<sup>[4]</sup>                   | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark:       | :heavy_check_mark:   |
+| PAM<sup>[4]</sup>                    | :heavy_check_mark: | :x:                | :heavy_check_mark: | :heavy_check_mark:       | :heavy_check_mark:   |
+| Rank-Preserving Reward<sup>[5]</sup> | :heavy_check_mark: | :x:                | :heavy_check_mark: | :heavy_check_mark:       | :heavy_check_mark:   |
 
 :heavy_check_mark: Supported
 

@@ -5,7 +5,6 @@ import gymnasium
 from auto_shaping.utils.collection_wrapper import CollectionWrapper
 from auto_shaping.spec.reward_spec import RewardSpec, Variable, Constant
 from auto_shaping.utils.utils import (
-    monitor_stl_episode,
     monitor_filtering_stl_episode,
     extend_state,
 )

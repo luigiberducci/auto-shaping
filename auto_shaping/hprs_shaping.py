@@ -33,9 +33,7 @@ class SparseSuccessRewardWrapper(gymnasium.Wrapper):
         env: gymnasium.Env,
         specs: list[str],
         variables: list[Variable],
-        constants: list[
-            Union[Constant, tuple[str, float], tuple[str, float, str]]
-        ] = None,
+        constants: list[Constant] = None,
     ):
         super(SparseSuccessRewardWrapper, self).__init__(env)
 
@@ -52,7 +50,7 @@ class SparseSuccessRewardWrapper(gymnasium.Wrapper):
         reward = 0.0
 
         for target_spec in self._target_specs:
-            (fn, var_name), aritm_op, threshold = target_spec._predicate
+            (fn, var_name), aritm_op, threshold = target_spec._predicate.to_tuple()
             cmp_lambda = _cmp_lambdas[aritm_op]
 
             val = fns[fn](next_state[var_name])
@@ -147,7 +145,7 @@ class HPRSWrapper(SparseSuccessRewardWrapper):
         reward = 0.0
 
         for spec in self._safety_specs:
-            (fn, var), aritm_op, threshold = spec._predicate
+            (fn, var), aritm_op, threshold = spec._predicate.to_tuple()
             cmp_lambda = _cmp_lambdas[aritm_op]
             val = fns[fn](state[var])
 
@@ -160,14 +158,14 @@ class HPRSWrapper(SparseSuccessRewardWrapper):
 
         safety_weight = 1.0
         for spec in self._safety_specs:
-            (fn, var), aritm_op, threshold = spec._predicate
+            (fn, var), aritm_op, threshold = spec._predicate.to_tuple()
             cmp_lambda = _cmp_lambdas[aritm_op]
             val = fns[fn](state[var])
 
             safety_weight *= float(cmp_lambda(val, threshold))
 
         for spec in self._target_spec:
-            (fn, var), aritm_op, threshold = spec._predicate
+            (fn, var), aritm_op, threshold = spec._predicate.to_tuple()
             val = fns[fn](state[var])
 
             minv = self._variables[var].min
@@ -187,7 +185,7 @@ class HPRSWrapper(SparseSuccessRewardWrapper):
 
         safety_weight = 1.0
         for spec in self._safety_specs:
-            (fn, var), aritm_op, threshold = spec._predicate
+            (fn, var), aritm_op, threshold = spec._predicate.to_tuple()
             cmp_lambda = _cmp_lambdas[aritm_op]
             val = fns[fn](state[var])
 
@@ -195,7 +193,7 @@ class HPRSWrapper(SparseSuccessRewardWrapper):
 
         target_weight = 1.0
         for spec in self._target_spec:
-            (fn, var), aritm_op, threshold = spec._predicate
+            (fn, var), aritm_op, threshold = spec._predicate.to_tuple()
             val = fns[fn](state[var])
 
             minv = self._variables[var].min
@@ -209,7 +207,7 @@ class HPRSWrapper(SparseSuccessRewardWrapper):
             target_weight *= target_reward
 
         for spec in self._comfort_specs:
-            (fn, var), aritm_op, threshold = spec._predicate
+            (fn, var), aritm_op, threshold = spec._predicate.to_tuple()
             val = fns[fn](state[var])
 
             minv = self._variables[var].min
