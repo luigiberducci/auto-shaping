@@ -11,6 +11,7 @@ import numpy as np
 from auto_shaping.spec.reward_spec import Variable, Constant, RewardSpec
 from auto_shaping.utils import monitor_stl_episode
 from auto_shaping.utils.collection_wrapper import CollectionWrapper
+from auto_shaping.utils.utils import extend_state
 
 
 class PAMWrapper(CollectionWrapper):
@@ -26,9 +27,6 @@ class PAMWrapper(CollectionWrapper):
             "max_length": None,
         }
         self._params.update(params or {})
-
-        var_names = [var[0] for var in variables]
-        super().__init__(env, variables=var_names)
 
         self._spec = RewardSpec(
             specs=specs,
@@ -49,7 +47,7 @@ class PAMWrapper(CollectionWrapper):
                     self._stl_target_specs.append(stl_req)
                 elif req_spec._operator == "encourage":
                     # encourage is a special case, in which PAM uses average semantics
-                    stl_req = req_spec._predicate.to_rtamt()
+                    stl_req = req_spec._predicate.to_rtamt()    # does it even work?
                     self._stl_comfort_specs.append(stl_req)
                 else:
                     raise NotImplementedError()
@@ -57,6 +55,20 @@ class PAMWrapper(CollectionWrapper):
                 warnings.warn(
                     f"Failed to parse requirement: {req_spec}, make sure it is a valid STL formula"
                 )
+
+        self._variables = [var for var in self._spec.variables] + [
+            var for var in self._spec.constants
+        ]
+        extractor_fn = lambda state, action: extend_state(
+            env=env, state=state, action=action, spec=self._spec
+        )
+        super(PAMWrapper, self).__init__(
+            env,
+            extractor_fn=extractor_fn,
+            variables=self._variables,
+        )
+
+
 
     def _reward(self, obs, done, info):
         reward = 0.0
@@ -90,7 +102,7 @@ class PAMWrapper(CollectionWrapper):
                     self._variables,
                     self._episode,
                 )
-                max_len_episode = self._params["max_length"] or len(self._episode)
+                max_len_episode = self._params["max_length"] or len(self._episode["time"])
                 robustness_trace = robustness_trace + [
                     [-1, -1] for _ in range((max_len_episode - len(robustness_trace)))
                 ]
