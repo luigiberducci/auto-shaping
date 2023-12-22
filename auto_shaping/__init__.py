@@ -4,15 +4,19 @@ from typing import Union
 
 import gymnasium
 
-from auto_shaping.bhnr_shaping import BHNRWrapper
 from auto_shaping.spec.reward_spec import RewardSpec, Variable, Constant
 from auto_shaping.tltl_shaping import TLTLWrapper
 from auto_shaping.hprs_shaping import HPRSWrapper
+from auto_shaping.bhnr_shaping import BHNRWrapper
+from auto_shaping.pam_shaping import PAMWrapper
+from auto_shaping.rpr_shaping import RPRWrapper
 
 __entry_points__ = {
     "TLTL": TLTLWrapper,
     "HPRS": HPRSWrapper,
     "BHNR": BHNRWrapper,
+    "PAM": PAMWrapper,
+    "RPR": RPRWrapper,
 }
 
 

@@ -10,10 +10,15 @@ class DictWrapper(gymnasium.Wrapper, gymnasium.utils.RecordConstructorArgs):
     """
 
     def __init__(
-        self, env: gymnasium.Env, variables: list[str], extractor_fn: Callable = None,
+        self,
+        env: gymnasium.Env,
+        variables: list[str],
+        extractor_fn: Callable = None,
     ):
         gymnasium.utils.RecordConstructorArgs.__init__(
-            self, variables=variables, extractor_fn=extractor_fn,
+            self,
+            variables=variables,
+            extractor_fn=extractor_fn,
         )
         gymnasium.Wrapper.__init__(self, env)
 
@@ -37,7 +42,9 @@ class DictWrapper(gymnasium.Wrapper, gymnasium.utils.RecordConstructorArgs):
                 else self.observation_space.high[i]
             )
             obsspace[var] = gymnasium.spaces.Box(
-                low=low, high=high, dtype=self.observation_space.dtype,
+                low=low,
+                high=high,
+                dtype=self.observation_space.dtype,
             )
 
         self.observation_space = gymnasium.spaces.Dict(obsspace)

@@ -1,7 +1,8 @@
+from __future__ import annotations
 import logging
 import pathlib
 from collections import namedtuple
-from typing import List, Tuple, Union
+from typing import List, Union, Any
 
 from lark import Lark
 
@@ -40,6 +41,36 @@ def check_const(name, value, description=None):
     ), f"Constant description must be a string or None, got {type(description)}"
 
 
+class PredicateSpec:
+    def __init__(self, variable: tuple[Any, str], operator: str, value: float):
+        self._variable = variable
+        self._operator = operator
+        self._value = value
+
+    def to_rtamt(self):
+        # process variable
+        proc_fn, var = self._variable
+        cmp_op = self._operator
+        threshold_value = self._value
+
+        if proc_fn == "abs":
+            var_str = f"abs({var})"
+        elif proc_fn == "exp":
+            var_str = f"exp({var})"
+        elif proc_fn is None:
+            var_str = f"{var}"
+        else:
+            raise ValueError(f"Unknown processing function {proc_fn}")
+
+        # process rest of the predicate
+        spec = f"{var_str} {cmp_op} {threshold_value}"
+
+        return spec
+
+    def to_tuple(self) -> tuple[tuple[callable | None, str], str, float]:
+        return self._variable, self._operator, self._value
+
+
 class RequirementSpec:
     grammar_path = pathlib.Path(__file__).parent.parent / "parser" / "grammar.txt"
     transformer = RewardShapingTransformer()
@@ -58,28 +89,14 @@ class RequirementSpec:
         tree = self.parser.parse(spec)
         self._spec = spec
         self._operator = tree.data
-        self._predicate = tree.children[0]
+        variable, operator, value = tree.children[0]
+        self._predicate = PredicateSpec(variable, operator, value)
 
     def __str__(self):
         return self._spec
 
     def to_rtamt(self):
-        # unpack predicate
-        proc_fn, var = self._predicate[0]
-        cmp_op = self._predicate[1]
-        threshold_value = self._predicate[2]
-
-        # process var
-        var_str = ""
-        if proc_fn == "abs":
-            var_str = f"abs({var})"
-        elif proc_fn == "exp":
-            var_str = f"exp({var})"
-        elif proc_fn is None:
-            var_str = f"{var}"
-        else:
-            raise ValueError(f"Unknown processing function {proc_fn}")
-        pred_str = f"{var_str} {cmp_op} {threshold_value}"
+        pred_str = self._predicate.to_rtamt()
 
         # process temporal operator
         if self._operator == "achieve":

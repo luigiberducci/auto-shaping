@@ -5,7 +5,6 @@ import gymnasium
 from auto_shaping.utils.collection_wrapper import CollectionWrapper
 from auto_shaping.spec.reward_spec import RewardSpec, Variable, Constant
 from auto_shaping.utils.utils import (
-    monitor_stl_episode,
     monitor_filtering_stl_episode,
     extend_state,
 )
@@ -29,7 +28,11 @@ class BHNRWrapper(CollectionWrapper):
         var_names = [var[0] for var in variables]
         super().__init__(env, variables=var_names)
 
-        self._spec = RewardSpec(specs=specs, variables=variables, constants=constants,)
+        self._spec = RewardSpec(
+            specs=specs,
+            variables=variables,
+            constants=constants,
+        )
 
         reqs = []
         for req_spec in self._spec.specs:
@@ -61,7 +64,9 @@ class BHNRWrapper(CollectionWrapper):
         # compute robustness if episode is at least 2 steps long
         if len(self._episode["time"]) > 1:
             robustness_trace = monitor_filtering_stl_episode(
-                self._stl_spec, self._variables, self._episode,
+                self._stl_spec,
+                self._variables,
+                self._episode,
             )
             reward = robustness_trace[0][1]
 

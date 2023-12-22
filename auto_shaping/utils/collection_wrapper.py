@@ -23,7 +23,10 @@ class CollectionWrapper(gymnasium.Wrapper, gymnasium.utils.RecordConstructorArgs
         window_len: int = None,
     ):
         gymnasium.utils.RecordConstructorArgs.__init__(
-            self, variables=variables, extractor_fn=extractor_fn, window_len=window_len,
+            self,
+            variables=variables,
+            extractor_fn=extractor_fn,
+            window_len=window_len,
         )
 
         super(CollectionWrapper, self).__init__(env)

@@ -8,7 +8,6 @@ from stable_baselines3 import PPO, SAC
 from stable_baselines3.common.callbacks import EvalCallback
 from stable_baselines3.common.monitor import Monitor
 from stable_baselines3.common.utils import set_random_seed
-from wandb.integration.sb3 import WandbCallback
 
 import auto_shaping
 from training.schedules import linear_schedule
@@ -48,6 +47,7 @@ def main(args):
         assert args.wandb_entity is not None, "must provide wandb entity"
         assert args.wandb_project is not None, "must provide wandb project"
         import wandb
+        from wandb.integration.sb3 import WandbCallback
 
         run = wandb.init(
             entity=args.wandb_entity,
@@ -64,7 +64,7 @@ def main(args):
         callbacks.append(wand_callback)
 
     # set up environments
-    seed = args.seed or np.random.randint(0, 2 ** 32 - 1)
+    seed = args.seed or np.random.randint(0, 2**32 - 1)
     set_random_seed(seed)
 
     env_kwargs = {"render_mode": "rgb_array"}
@@ -112,7 +112,8 @@ def main(args):
 
     # train
     model.learn(
-        total_timesteps=args.total_timesteps, callback=callbacks,
+        total_timesteps=args.total_timesteps,
+        callback=callbacks,
     )
 
     if args.wandb:
@@ -122,7 +123,9 @@ def main(args):
 if __name__ == "__main__":
     import argparse
 
-    parser = argparse.ArgumentParser(description="Run a reward auto_shaping experiment.")
+    parser = argparse.ArgumentParser(
+        description="Run a reward auto_shaping experiment."
+    )
 
     parser.add_argument(
         "--env-id",
